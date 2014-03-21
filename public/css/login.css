@@ -1,0 +1,4 @@
+@import url("./base/css/bootstrap.min.css");
+.err{position: absolute;top:0; width: 100%;text-align: center; display: none;}
+.err .close{ position: absolute; top:15px; right: 10px;}
+.login-box{width: 420px; height:300px; margin-top:200px; border:1px solid rgba(0,0,0,0.2); box-shadow: 0 5px 10px rgba(0,0,0,0.2); border-radius: 6px; }
