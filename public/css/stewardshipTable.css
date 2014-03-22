@@ -1,0 +1,19 @@
+.tb{width:100%;min-width: 1200px; height: auto; font-size: 14px;}
+.tb,.tb th, .tb tr, .tb td{border: 1px solid #eee; text-align: center;vertical-align: middle;}
+.tb th{padding:0px 0px;}
+.tb tr{height: 36px;}
+table.tb{border-collapse: separate;}
+.tb tbody{height: 200px; overflow: auto;}
+.tb .border-top{border-top:1px solid rgba(0, 128, 0, 1); }
+.tb .border-bottom{border-bottom:1px solid rgba(0, 128, 0, 1);  }
+.tb .border-left{border-left:1px solid rgba(0, 128,0, 1);  }
+.tb .border-right{border-right:1px solid rgba(0, 128,0, 1); }
+/*表头样式*/
+.tb tr th.danger-rate{width:40px;}
+.tb .ipt{width: 100%; height: 36px; line-height: 25px; margin:0; border:none;}
+
+.check{display:inline-block;*display: inline;zoom:1;width:100%; height: 100%; color:white;line-height: 36px; vertical-align:middle;}
+.tb tr:hover .check{color:#ccc;}
+.tb tr:hover .ms-hover .check{color:green;}
+.ms-hover .check{cursor:pointer; color:rgba(0,128,0,1);}
+.tb tr:hover .checked .check,.checked .check{color:rgba(0,128,0,1); font-weight: bold;}
