@@ -20,11 +20,11 @@ define(["jquery", "./login"], function($, login) {
 			$("body").delegate("#login", "click", function() {
 				me.onLogin();
 			});
-			$("body").delegate(".close","click",function(){
+			$("body").delegate(".close", "click", function() {
 				$(this).parent().hide();
 			});
-			$("body").bind("err",function(){
-				me.err.apply(me,arguments);
+			$("body").bind("err", function() {
+				me.err.apply(me, arguments);
 			});
 		},
 		onAccountChange: function(evt) {
@@ -33,11 +33,11 @@ define(["jquery", "./login"], function($, login) {
 				val = ipt.val();
 			if (!val || val.length === 0) {
 				div.addClass("has-error");
-				this.err("account can't be emtpy");
+				this.err("账号不能为空");
 			} else {
 				div.removeClass("has-error");
 				this.err();
-			}			
+			}
 		},
 		onPwdChange: function(evt) {
 			var ipt = $(evt.target),
@@ -45,11 +45,11 @@ define(["jquery", "./login"], function($, login) {
 				val = ipt.val();
 			if (!val || val.length === 0) {
 				div.addClass("has-error");
-				this.err("password can't be emtpy");
+				this.err("密码不能为空");
 			} else {
 				div.removeClass("has-error");
 				this.err();
-			}			
+			}
 		},
 		onLogin: function() {
 			var userData = this.getUserData();
@@ -57,9 +57,9 @@ define(["jquery", "./login"], function($, login) {
 		err: function(msg) {
 			var err = $("#err");
 			if (err.length === 0) {
-				err = $('<div id="err" class="alert alert-danger"></div>');				
+				err = $('<div id="err" class="alert alert-danger"></div>');
 				err.appendTo($(".err"));
-			};
+			}
 			if (msg) {
 				err.html(msg);
 				err.parent().show();
