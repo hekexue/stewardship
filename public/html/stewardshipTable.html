@@ -1,0 +1,364 @@
+<html>
+<head>
+	<meta charset="utf-8"></meta>
+<link href="../../css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" type="text/css" href="../../css/bootstrap-responsive.css" rel="stylesheet">
+<link rel="stylesheet" href="c../../ss/docs.css" rel="Stylesheet">
+<link rel="stylesheet" type="text/css" href="./css/evaluateTable2.css">
+<script type="text/javascript" src="../../../jquery-1.8.3.js"></script>
+</head>
+<body>
+<div>
+	<table class="tb">
+		<thead>
+			<tr>
+				<th colspan="2" rowspan="3">分级项目</th>
+				<th colspan="4">危害程度</th>
+				<th colspan="9">危害因素</th>
+				<th colspan="3">风险等级</th>
+			</tr>
+			<tr>
+				<th col="1" class="danger-rate" rowspan="2">非常<br>严重<br>（A）</th>
+				<th col="2" class="danger-rate" rowspan="2">严重（B）</th>
+				<th col="3" class="danger-rate" rowspan="2">一般（C）</th>
+				<th col="4" class="danger-rate" rowspan="2">微弱（D）</th>
+				<th colspan="3">质量数据（Q1）</th>
+				<th colspan="5">敏感因子及其他潜在影响（Q2）</th>
+				<th col="13" rowspan="2">全过程概率（Q）</th>
+				<th col="14" class="danger-rate" rowspan="2">高风险</th>
+				<th col="15" class="danger-rate" rowspan="2">较高风险</th>
+				<th col="16" class="danger-rate" rowspan="2">一般风险</th>
+			</tr>
+			<tr>
+				<th col="5">历史数据（Q11）</th>
+				<th col="6">通报预警（Q12）</th>
+				<th col="7">索赔退货（Q13）</th>
+				<th col="8">技术法规（Q21）</th>
+				<th col="9">社会关注（Q22）</th>
+				<th col="10">贸易方式（Q23）</th>
+				<th col="11">使用环境（Q24）</th>
+				<th col="12">潜在影响（Q25）</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- tr>
+			td[rowspan=7]+td*17 -->
+			<tr id="001">
+				<td rowspan="7">物理危害</td>
+				<td class="row-title">电气危害</td>
+				<td row="1" col="1"><span class="check">A</span></td>
+				<td row="1" col="2"><span class="check">B</span></td>
+				<td row="1" col="3"><span class="check">C</span></td>
+				<td row="1" col="4"><span class="check">D</span></td>
+				<td row="1" col="5"><input type="text" class="ipt"/></td>
+				<td row="1" col="6"><input type="text" class="ipt"/></td>
+				<td row="1" col="7"><input type="text" class="ipt"/></td>
+				<td row="1" col="8"><input type="text" class="ipt"/></td>
+				<td row="1" col="9"><input type="text" class="ipt"/></td>
+				<td row="1" col="10"><input type="text" class="ipt"/></td>
+				<td row="1" col="11"><input type="text" class="ipt"/></td>
+				<td row="1" col="12"><input type="text" class="ipt"/></td>
+				<td row="1" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="1" col="14"><span type="risk"></span></td>
+				<td row="1" col="15"><span type="risk"></span></td>
+				<td row="1" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="002">
+				<td class="row-title">机械危害</td>
+				<td row="2" col="1"><span class="check">A</span></td>
+				<td row="2" col="2"><span class="check">B</span></td>
+				<td row="2" col="3"><span class="check">C</span></td>
+				<td row="2" col="4"><span class="check">D</span></td>
+				<td row="2" col="5"><input type="text" class="ipt"/></td>
+				<td row="2" col="6"><input type="text" class="ipt"/></td>
+				<td row="2" col="7"><input type="text" class="ipt"/></td>
+				<td row="2" col="8"><input type="text" class="ipt"/></td>
+				<td row="2" col="9"><input type="text" class="ipt"/></td>
+				<td row="2" col="10"><input type="text" class="ipt"/></td>
+				<td row="2" col="11"><input type="text" class="ipt"/></td>
+				<td row="2" col="12"><input type="text" class="ipt"/></td>
+				<td row="2" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="2" col="14"><span type="risk"></span></td>
+				<td row="2" col="15"><span type="risk"></span></td>
+				<td row="2" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="003">
+				<td class="row-title">电磁危害</td>
+				<td row="3" col="1"><span class="check">A</span></td>
+				<td row="3" col="2"><span class="check">B</span></td>
+				<td row="3" col="3"><span class="check">C</span></td>
+				<td row="3" col="4"><span class="check">D</span></td>
+				<td row="3" col="5"><input type="text" class="ipt"/></td>
+				<td row="3" col="6"><input type="text" class="ipt"/></td>
+				<td row="3" col="7"><input type="text" class="ipt"/></td>
+				<td row="3" col="8"><input type="text" class="ipt"/></td>
+				<td row="3" col="9"><input type="text" class="ipt"/></td>
+				<td row="3" col="10"><input type="text" class="ipt"/></td>
+				<td row="3" col="11"><input type="text" class="ipt"/></td>
+				<td row="3" col="12"><input type="text" class="ipt"/></td>
+				<td row="3" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="3" col="14"><span type="risk"></span></td>
+				<td row="3" col="15"><span type="risk"></span></td>
+				<td row="3" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="004">
+				<td class="row-title">发热灼伤及火灾危害</td>
+				<td row="4" col="1"><span class="check">A</span></td>
+				<td row="4" col="2"><span class="check">B</span></td>
+				<td row="4" col="3"><span class="check">C</span></td>
+				<td row="4" col="4"><span class="check">D</span></td>
+				<td row="4" col="5"><input type="text" class="ipt"/></td>
+				<td row="4" col="6"><input type="text" class="ipt"/></td>
+				<td row="4" col="7"><input type="text" class="ipt"/></td>
+				<td row="4" col="8"><input type="text" class="ipt"/></td>
+				<td row="4" col="9"><input type="text" class="ipt"/></td>
+				<td row="4" col="10"><input type="text" class="ipt"/></td>
+				<td row="4" col="11"><input type="text" class="ipt"/></td>
+				<td row="4" col="12"><input type="text" class="ipt"/></td>
+				<td row="4" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="4" col="14"><span type="risk"></span></td>
+				<td row="4" col="15"><span type="risk"></span></td>
+				<td row="4" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="005">
+				<td class="row-title">放射性危害</td>
+				<td row="5" col="1"><span class="check">A</span></td>
+				<td row="5" col="2"><span class="check">B</span></td>
+				<td row="5" col="3"><span class="check">C</span></td>
+				<td row="5" col="4"><span class="check">D</span></td>
+				<td row="5" col="5"><input type="text" class="ipt"/></td>
+				<td row="5" col="6"><input type="text" class="ipt"/></td>
+				<td row="5" col="7"><input type="text" class="ipt"/></td>
+				<td row="5" col="8"><input type="text" class="ipt"/></td>
+				<td row="5" col="9"><input type="text" class="ipt"/></td>
+				<td row="5" col="10"><input type="text" class="ipt"/></td>
+				<td row="5" col="11"><input type="text" class="ipt"/></td>
+				<td row="5" col="12"><input type="text" class="ipt"/></td>
+				<td row="5" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="5" col="14"><span type="risk"></span></td>
+				<td row="5" col="15"><span type="risk"></span></td>
+				<td row="5" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="006">
+				<td class="row-title">听力视力危害</td>
+				<td row="6" col="1"><span class="check">A</span></td>
+				<td row="6" col="2"><span class="check">B</span></td>
+				<td row="6" col="3"><span class="check">C</span></td>
+				<td row="6" col="4"><span class="check">D</span></td>
+				<td row="6" col="5"><input type="text" class="ipt"/></td>
+				<td row="6" col="6"><input type="text" class="ipt"/></td>
+				<td row="6" col="7"><input type="text" class="ipt"/></td>
+				<td row="6" col="8"><input type="text" class="ipt"/></td>
+				<td row="6" col="9"><input type="text" class="ipt"/></td>
+				<td row="6" col="10"><input type="text" class="ipt"/></td>
+				<td row="6" col="11"><input type="text" class="ipt"/></td>
+				<td row="6" col="12"><input type="text" class="ipt"/></td>
+				<td row="6" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="6" col="14"><span type="risk"></span></td>
+				<td row="6" col="15"><span type="risk"></span></td>
+				<td row="6" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="007">
+				<td class="row-title">物理环境危害</td>
+				<td row="7" col="1"><span class="check">A</span></td>
+				<td row="7" col="2"><span class="check">B</span></td>
+				<td row="7" col="3"><span class="check">C</span></td>
+				<td row="7" col="4"><span class="check">D</span></td>
+				<td row="7" col="5"><input type="text" class="ipt"/></td>
+				<td row="7" col="6"><input type="text" class="ipt"/></td>
+				<td row="7" col="7"><input type="text" class="ipt"/></td>
+				<td row="7" col="8"><input type="text" class="ipt"/></td>
+				<td row="7" col="9"><input type="text" class="ipt"/></td>
+				<td row="7" col="10"><input type="text" class="ipt"/></td>
+				<td row="7" col="11"><input type="text" class="ipt"/></td>
+				<td row="7" col="12"><input type="text" class="ipt"/></td>
+				<td row="7" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="7" col="14"><span type="risk"></span></td>
+				<td row="7" col="15"><span type="risk"></span></td>
+				<td row="7" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="008">
+				<td rowspan="3">化学危害</td>
+				<td class="row-title">有毒有害物质危害</td>
+				<td row="8" col="1"><span class="check">A</span></td>
+				<td row="8" col="2"><span class="check">B</span></td>
+				<td row="8" col="3"><span class="check">C</span></td>
+				<td row="8" col="4"><span class="check">D</span></td>
+				<td row="8" col="5"><input type="text" class="ipt"/></td>
+				<td row="8" col="6"><input type="text" class="ipt"/></td>
+				<td row="8" col="7"><input type="text" class="ipt"/></td>
+				<td row="8" col="8"><input type="text" class="ipt"/></td>
+				<td row="8" col="9"><input type="text" class="ipt"/></td>
+				<td row="8" col="10"><input type="text" class="ipt"/></td>
+				<td row="8" col="11"><input type="text" class="ipt"/></td>
+				<td row="8" col="12"><input type="text" class="ipt"/></td>
+				<td row="8" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="8" col="14"><span type="risk"></span></td>
+				<td row="8" col="15"><span type="risk"></span></td>
+				<td row="8" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="009">
+				<td class="row-title">伤害皮肤危害</td>
+				<td row="9" col="1"><span class="check">A</span></td>
+				<td row="9" col="2"><span class="check">B</span></td>
+				<td row="9" col="3"><span class="check">C</span></td>
+				<td row="9" col="4"><span class="check">D</span></td>
+				<td row="9" col="5"><input type="text" class="ipt"/></td>
+				<td row="9" col="6"><input type="text" class="ipt"/></td>
+				<td row="9" col="7"><input type="text" class="ipt"/></td>
+				<td row="9" col="8"><input type="text" class="ipt"/></td>
+				<td row="9" col="9"><input type="text" class="ipt"/></td>
+				<td row="9" col="10"><input type="text" class="ipt"/></td>
+				<td row="9" col="11"><input type="text" class="ipt"/></td>
+				<td row="9" col="12"><input type="text" class="ipt"/></td>
+				<td row="9" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="9" col="14"><span type="risk"></span></td>
+				<td row="9" col="15"><span type="risk"></span></td>
+				<td row="9" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="010">
+				<td class="row-title">化学环境危害</td>
+				<td row="10" col="1"><span class="check">A</span></td>
+				<td row="10" col="2"><span class="check">B</span></td>
+				<td row="10" col="3"><span class="check">C</span></td>
+				<td row="10" col="4"><span class="check">D</span></td>
+				<td row="10" col="5"><input type="text" class="ipt"/></td>
+				<td row="10" col="6"><input type="text" class="ipt"/></td>
+				<td row="10" col="7"><input type="text" class="ipt"/></td>
+				<td row="10" col="8"><input type="text" class="ipt"/></td>
+				<td row="10" col="9"><input type="text" class="ipt"/></td>
+				<td row="10" col="10"><input type="text" class="ipt"/></td>
+				<td row="10" col="11"><input type="text" class="ipt"/></td>
+				<td row="10" col="12"><input type="text" class="ipt"/></td>
+				<td row="10" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="10" col="14"><span type="risk"></span></td>
+				<td row="10" col="15"><span type="risk"></span></td>
+				<td row="10" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="011">
+				<td rowspan="2">生物危害</td>
+				<td class="row-title">生物致病危害</td>
+				<td row="11" col="1"><span class="check">A</span></td>
+				<td row="11" col="2"><span class="check">B</span></td>
+				<td row="11" col="3"><span class="check">C</span></td>
+				<td row="11" col="4"><span class="check">D</span></td>
+				<td row="11" col="5"><input type="text" class="ipt"/></td>
+				<td row="11" col="6"><input type="text" class="ipt"/></td>
+				<td row="11" col="7"><input type="text" class="ipt"/></td>
+				<td row="11" col="8"><input type="text" class="ipt"/></td>
+				<td row="11" col="9"><input type="text" class="ipt"/></td>
+				<td row="11" col="10"><input type="text" class="ipt"/></td>
+				<td row="11" col="11"><input type="text" class="ipt"/></td>
+				<td row="11" col="12"><input type="text" class="ipt"/></td>
+				<td row="11" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="11" col="14"><span type="risk"></span></td>
+				<td row="11" col="15"><span type="risk"></span></td>
+				<td row="11" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="012">
+				<td class="row-title">生物环境危害</td>
+				<td row="12" col="1"><span class="check">A</span></td>
+				<td row="12" col="2"><span class="check">B</span></td>
+				<td row="12" col="3"><span class="check">C</span></td>
+				<td row="12" col="4"><span class="check">D</span></td>
+				<td row="12" col="5"><input type="text" class="ipt"/></td>
+				<td row="12" col="6"><input type="text" class="ipt"/></td>
+				<td row="12" col="7"><input type="text" class="ipt"/></td>
+				<td row="12" col="8"><input type="text" class="ipt"/></td>
+				<td row="12" col="9"><input type="text" class="ipt"/></td>
+				<td row="12" col="10"><input type="text" class="ipt"/></td>
+				<td row="12" col="11"><input type="text" class="ipt"/></td>
+				<td row="12" col="12"><input type="text" class="ipt"/></td>
+				<td row="12" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="12" col="14"><span type="risk"></span></td>
+				<td row="12" col="15"><span type="risk"></span></td>
+				<td row="12" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="013">
+				<td rowspan="2">消费者权益危害</td>
+				<td class="row-title">消费者受欺诈伤害</td>
+				<td row="13" col="1"><span class="check">A</span></td>
+				<td row="13" col="2"><span class="check">B</span></td>
+				<td row="13" col="3"><span class="check">C</span></td>
+				<td row="13" col="4"><span class="check">D</span></td>
+				<td row="13" col="5"><input type="text" class="ipt"/></td>
+				<td row="13" col="6"><input type="text" class="ipt"/></td>
+				<td row="13" col="7"><input type="text" class="ipt"/></td>
+				<td row="13" col="8"><input type="text" class="ipt"/></td>
+				<td row="13" col="9"><input type="text" class="ipt"/></td>
+				<td row="13" col="10"><input type="text" class="ipt"/></td>
+				<td row="13" col="11"><input type="text" class="ipt"/></td>
+				<td row="13" col="12"><input type="text" class="ipt"/></td>
+				<td row="13" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="13" col="14"><span type="risk"></span></td>
+				<td row="13" col="15"><span type="risk"></span></td>
+				<td row="13" col="16"><span type="risk"></span></td>
+			</tr>
+			<tr id="014">
+				<td class="row-title">误导造成的伤害</td>
+				<td row="14" col="1"><span class="check">A</span></td>
+				<td row="14" col="2"><span class="check">B</span></td>
+				<td row="14" col="3"><span class="check">C</span></td>
+				<td row="14" col="4"><span class="check">D</span></td>
+				<td row="14" col="5"><input type="text" class="ipt"/></td>
+				<td row="14" col="6"><input type="text" class="ipt"/></td>
+				<td row="14" col="7"><input type="text" class="ipt"/></td>
+				<td row="14" col="8"><input type="text" class="ipt"/></td>
+				<td row="14" col="9"><input type="text" class="ipt"/></td>
+				<td row="14" col="10"><input type="text" class="ipt"/></td>
+				<td row="14" col="11"><input type="text" class="ipt"/></td>
+				<td row="14" col="12"><input type="text" class="ipt"/></td>
+				<td row="14" col="13"><input type="text" disabled class="ipt"/></td>
+				<td row="14" col="14"><span type="risk"></span></td>
+				<td row="14" col="15"><span type="risk"></span></td>
+				<td row="14" col="16"><span type="risk"></span></td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<td colspan="2">产品整体风险评价</td>
+				<td colspan="16"><input type="text" class="ipt"/></td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<script type="text/javascript">
+		var table = $('table'),
+		thead = table.find("thead");
+		function hoverhandler (e) {
+			var td = $(this).closest("td"),
+			tr = td.closest("tr"),
+			rowNum =td.attr("row"),
+			colNum = td.attr("col"),
+			row = table.find("td[row="+rowNum+"]:lt("+(colNum-1)+")"),
+			col =  table.find("td[col="+colNum+"]:lt("+(rowNum-1)+")");
+			if(e.type=="mouseenter"||e.type=="focusin"){
+				table.find("td,th").removeClass("border-top border-bottom border-left border-right");				
+				row.addClass("border-top border-bottom");
+				col.addClass("border-left border-right");
+				td.addClass("ms-hover border-right border-bottom");
+				td.closest("tr").find(".row-title").addClass("border-top border-bottom border-left");
+				thead.find("th[col="+colNum+"]").addClass("border-top border-left border-right");
+			}else{
+				row.removeClass("border-top border-bottom");
+				col.removeClass("border-left border-right");
+				td.removeClass("ms-hover border-right border-bottom");
+				td.closest("tr").find(".row-title").removeClass("border-top border-bottom border-left");
+				thead.find("th[col="+colNum+"]").removeClass("border-top border-left border-right");
+			}
+		}
+		table.delegate("td[col]","hover",hoverhandler);
+		table.delegate(".ipt","focus",hoverhandler);
+		table.delegate(".ipt","blur",hoverhandler);
+		table.delegate(".check","click",function(){
+			var td = $(this).closest("td");
+			td.siblings().removeClass("checked");
+			td.addClass("checked");
+		})
+		table.delegate(".ipt","change",function  () {
+			var ipt = $(this),tr = ipt.closest("tr").find(".ipt[]")
+		})
+	</script>
+</body>
+</html>

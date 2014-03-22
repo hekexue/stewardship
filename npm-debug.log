@@ -1,0 +1,128 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   '-g',
+1 verbose cli   'install',
+1 verbose cli   'node-inspector' ]
+2 info using npm@1.3.14
+3 info using node@v0.10.22
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose cache add [ 'node-inspector', null ]
+6 verbose cache add name=undefined spec="node-inspector" args=["node-inspector",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: 'node-inspector',
+7 verbose parsed url   path: 'node-inspector',
+7 verbose parsed url   href: 'node-inspector' }
+8 silly lockFile 4198ef9e-node-inspector node-inspector
+9 verbose lock node-inspector C:\Users\hekexue\AppData\Roaming\npm-cache\4198ef9e-node-inspector.lock
+10 silly lockFile 4198ef9e-node-inspector node-inspector
+11 silly lockFile 4198ef9e-node-inspector node-inspector
+12 verbose addNamed [ 'node-inspector', '' ]
+13 verbose addNamed [ null, '*' ]
+14 silly lockFile e68b88da-node-inspector node-inspector@
+15 verbose lock node-inspector@ C:\Users\hekexue\AppData\Roaming\npm-cache\e68b88da-node-inspector.lock
+16 silly addNameRange { name: 'node-inspector', range: '*', hasData: false }
+17 verbose url raw node-inspector
+18 verbose url resolving [ 'https://registry.npmjs.org/', './node-inspector' ]
+19 verbose url resolved https://registry.npmjs.org/node-inspector
+20 info trying registry request attempt 1 at 14:31:05
+21 verbose etag "CCEQ9DKG107CNJGDJGZJW3MMK"
+22 http GET https://registry.npmjs.org/node-inspector
+23 http 304 https://registry.npmjs.org/node-inspector
+24 silly registry.get cb [ 304,
+24 silly registry.get   { date: 'Sat, 22 Mar 2014 06:31:07 GMT',
+24 silly registry.get     server: 'Apache',
+24 silly registry.get     via: '1.1 varnish',
+24 silly registry.get     'last-modified': 'Sat, 22 Mar 2014 06:31:08 GMT',
+24 silly registry.get     'cache-control': 'max-age=1',
+24 silly registry.get     etag: '"CCEQ9DKG107CNJGDJGZJW3MMK"',
+24 silly registry.get     'x-served-by': 'cache-ty68-TYO',
+24 silly registry.get     'x-cache': 'MISS',
+24 silly registry.get     'x-cache-hits': '0',
+24 silly registry.get     'x-timer': 'S1395469867.537729263,VS0,VE479',
+24 silly registry.get     vary: 'Accept',
+24 silly registry.get     'content-length': '0',
+24 silly registry.get     'keep-alive': 'timeout=10, max=50',
+24 silly registry.get     connection: 'Keep-Alive' } ]
+25 verbose etag node-inspector from cache
+26 silly addNameRange number 2 { name: 'node-inspector', range: '*', hasData: true }
+27 silly addNameRange versions [ 'node-inspector',
+27 silly addNameRange   [ '0.0.1',
+27 silly addNameRange     '0.0.2',
+27 silly addNameRange     '0.0.3',
+27 silly addNameRange     '0.0.4',
+27 silly addNameRange     '0.1.0',
+27 silly addNameRange     '0.1.1',
+27 silly addNameRange     '0.1.2',
+27 silly addNameRange     '0.1.3',
+27 silly addNameRange     '0.1.4',
+27 silly addNameRange     '0.1.5',
+27 silly addNameRange     '0.1.6',
+27 silly addNameRange     '0.1.7',
+27 silly addNameRange     '0.1.8',
+27 silly addNameRange     '0.1.9',
+27 silly addNameRange     '0.1.10',
+27 silly addNameRange     '0.3.0',
+27 silly addNameRange     '0.3.1',
+27 silly addNameRange     '0.3.2',
+27 silly addNameRange     '0.3.3',
+27 silly addNameRange     '0.3.4',
+27 silly addNameRange     '0.4.0',
+27 silly addNameRange     '0.5.0',
+27 silly addNameRange     '0.6.0',
+27 silly addNameRange     '0.6.1',
+27 silly addNameRange     '0.6.2',
+27 silly addNameRange     '0.7.0-1',
+27 silly addNameRange     '0.2.0-beta1',
+27 silly addNameRange     '0.2.0-beta2',
+27 silly addNameRange     '0.2.0-beta3',
+27 silly addNameRange     '0.2.0-beta4',
+27 silly addNameRange     '0.3.0-preview1',
+27 silly addNameRange     '0.7.0-2',
+27 silly addNameRange     '0.7.0',
+27 silly addNameRange     '0.7.1',
+27 silly addNameRange     '0.7.2' ] ]
+28 verbose addNamed [ 'node-inspector', '0.7.2' ]
+29 verbose addNamed [ '0.7.2', '0.7.2' ]
+30 silly lockFile c5b3649f-node-inspector-0-7-2 node-inspector@0.7.2
+31 verbose lock node-inspector@0.7.2 C:\Users\hekexue\AppData\Roaming\npm-cache\c5b3649f-node-inspector-0-7-2.lock
+32 silly lockFile cef0ee91-spector-node-inspector-0-7-2-tgz https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz
+33 verbose lock https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz C:\Users\hekexue\AppData\Roaming\npm-cache\cef0ee91-spector-node-inspector-0-7-2-tgz.lock
+34 verbose addRemoteTarball [ 'https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz',
+34 verbose addRemoteTarball   'b9f1a1bbec7960d504edbfbc4bf191841794aab8' ]
+35 info retry fetch attempt 1 at 14:31:08
+36 verbose fetch to= C:\Users\hekexue\AppData\Local\Temp\npm-4408-5L7h329w\1395469868156-0.4481429804582149\tmp.tgz
+37 http GET https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz
+38 http 200 https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz
+39 silly lockFile cef0ee91-spector-node-inspector-0-7-2-tgz https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz
+40 silly lockFile cef0ee91-spector-node-inspector-0-7-2-tgz https://registry.npmjs.org/node-inspector/-/node-inspector-0.7.2.tgz
+41 silly lockFile c5b3649f-node-inspector-0-7-2 node-inspector@0.7.2
+42 silly lockFile c5b3649f-node-inspector-0-7-2 node-inspector@0.7.2
+43 silly lockFile e68b88da-node-inspector node-inspector@
+44 silly lockFile e68b88da-node-inspector node-inspector@
+45 error Error: shasum check failed for C:\Users\hekexue\AppData\Local\Temp\npm-4408-5L7h329w\1395469868156-0.4481429804582149\tmp.tgz
+45 error Expected: b9f1a1bbec7960d504edbfbc4bf191841794aab8
+45 error Actual:   f9e6308ea05516d6ce703c8d77946ea9653e479f
+45 error     at C:\Program Files\nodejs\node_modules\npm\node_modules\sha\index.js:38:8
+45 error     at ReadStream.<anonymous> (C:\Program Files\nodejs\node_modules\npm\node_modules\sha\index.js:85:7)
+45 error     at ReadStream.EventEmitter.emit (events.js:117:20)
+45 error     at _stream_readable.js:920:16
+45 error     at process._tickCallback (node.js:415:13)
+46 error If you need help, you may report this log at:
+46 error     <http://github.com/isaacs/npm/issues>
+46 error or email it to:
+46 error     <npm-@googlegroups.com>
+47 error System Windows_NT 6.1.7601
+48 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "-g" "install" "node-inspector"
+49 error cwd E:\ekp\stewardship
+50 error node -v v0.10.22
+51 error npm -v 1.3.14
+52 verbose exit [ 1, true ]
