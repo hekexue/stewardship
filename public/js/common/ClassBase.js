@@ -1,12 +1,12 @@
-define(function () {
+define(function() {
 
-	var initializing = false, fnTest = /xyz/.test(function() {
-		xyz;
-	}) ? /\b_super\b/ : /.*/;
+	var initializing = false,
+		fnTest = /xyz/.test(function() {
+			xyz;
+		}) ? /\b_super\b/ : /.*/;
 
 	// The base Class implementation (does nothing)
-	this.Class = function() {
-	};
+	this.Class = function() {};
 
 	// Create a new Class that inherits from this class
 	Class.extend = function(prop) {
@@ -19,11 +19,9 @@ define(function () {
 		initializing = false;
 
 		// Copy the properties over onto the new prototype
-		for ( var name in prop) {
+		for (var name in prop) {
 			// Check if we're overwriting an existing function
-			prototype[name] = typeof prop[name] == "function"
-					&& typeof _super[name] == "function"
-					&& fnTest.test(prop[name]) ? (function(name, fn) {
+			prototype[name] = typeof prop[name] == "function" && typeof _super[name] == "function" && fnTest.test(prop[name]) ? (function(name, fn) {
 				return function() {
 					var tmp = this._super;
 
@@ -56,6 +54,39 @@ define(function () {
 
 		// And make this class extendable
 		Class.extend = arguments.callee;
+		//add include method
+		Class.include = function() {
+
+		}
+
+		//设置绑定函数
+		Class.prototype.proxy = Class.proxy = function(fn, scope) {
+			if (typeof fn !== "function") {
+				throw new Error("proxy method need a ");
+			}
+			var me = this,
+				args = Array.prototype.slice.call(arguments, 2);
+			return function() {
+				args = args.concat(arugments);
+				return fn.apply(scope ? scope : me, args);
+			}
+		}
+
+		// 给类添加属性
+		Class.ext = function(obj) {
+			var extended = obj.extended;
+			for (var i in obj) {
+				Class[i] = obj[i];
+			}
+		};
+
+		// 给实例添加属性
+		Class.include = function(obj, overWrite) {
+			var included = obj.included;
+			for (var i in obj) {
+				overWrite ? (Class.prototype[i] = obj[i]) : (Class.prototype[i] ? "" : (Class.prototype[i] = obj[i]));
+			}
+		};
 
 		return Class;
 	};
