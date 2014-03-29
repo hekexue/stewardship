@@ -3,6 +3,7 @@ define(["jquery"], function($) {
 		RESSTATUS: "_r_",
 		RESSTATUSOK: "ok",
 		RESDATA: "data"
+
 	},
 		dataSafeConfig = {
 			DATASAFE: true

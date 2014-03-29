@@ -1,32 +1,56 @@
-define(["jquery", "./Type", "ErrorManager"], function($, type) {
-	function transfer(options) {
+define(["jquery", "./Type", "./ErrorManager", "./CONST", "./JSON"], function($, type, errorManager, sysConst, JSON) {
+	function transfer(method, options, dataType) {
+		var cb = success(options.success, options.onGlobalError),
+			err = fail(options.fail || function() {}),
+			data = JSON.stringify({
+				controller: options.controller || "",
+				action: options.action || "",
+				data: options.data || {}
+			});
+		delete options.controller;
+		delete options.action;
+		delete options.data;
+		delete options.success;
+		delete options.fail;
 
+		return jQuery.ajax($.extend({
+			type: method,
+			url: CONST.serviceUrl,
+			data: data,
+			success: cb,
+			fail: err,
+			dataType: dataType
+		}, options));
 	}
 
-	function sussess(res, callback, onGlobalError) {
-		var globalErr = (("," + CONST.GLOBALERROR.join(",") + ",").indexOf("," + res._r_ + ",") > -1);
-		if (globalErr) {
-			if (type.isFunction(onGlobalError)) {
-				onGlobalError(res);
+	function sussess(callback, onGlobalError) {
+		return function(res) {
+			var globalErr = (("," + CONST.GLOBALERROR.join(",") + ",").indexOf("," + res._r_ + ",") > -1);
+			if (globalErr) {
+				if (type.isFunction(onGlobalError)) {
+					onGlobalError(res);
+				} else {
+					fail(res);
+				}
 			} else {
-				fail(res);
-			}
-		} else {
-			if (type.isFunction(callback)) {
-				callback(res);
+				if (type.isFunction(callback)) {
+					callback(res);
+				}
 			}
 		}
 	}
 
-	function fail(res) {
-
+	function fail(callback) {
+		return function() {
+			callback.apply(null, arguments);
+		}
 	}
 
-	var CONST = {
+	var CONST = $.extend({
 		METHOD: "GET",
 		FORMAT: "JSON",
 		GLOBALERROR: ["notLogin", "noAuth", "sessionNotFound"]
-	},
+	}, sysConst),
 		ds = {
 			/**
 			 * start a server request
@@ -69,8 +93,7 @@ define(["jquery", "./Type", "ErrorManager"], function($, type) {
 				}
 
 				!format && (method = CONST.METHOD);
-				transfer(options);
-
+				transfer(method, options, format);
 			},
 			postJSON: function(options) {
 				if (!type.isObject(options)) {
