@@ -1,1 +1,2 @@
-@import url(./base/bootstrap.css);
+@import url("./base/css/bootstrap.min.css");
+@import url("./base/css/bootstrap-tab.css");
