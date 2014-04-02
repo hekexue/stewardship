@@ -28,7 +28,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'],
 					throw new Error(ckres);
 				}
 				this._super();
-				this.options = options;
+				this.options = options || {};
 				this.initEvent();
 				this.rendered = false;
 			},

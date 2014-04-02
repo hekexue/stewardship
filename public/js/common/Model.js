@@ -49,12 +49,12 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 			init: function(options) {
 				this.Class = this.prototype.constructor;
 				this._super(options);
-				this.parent = options.parent || Model;
+				//this.parent = options.parent || Model;
 				this.attributes = options.data || {};
 				this.original = $.extend({}, this.attributes);
 				this.changes = [];
 				this.synced = false;
-				this.remoteActions = this.parent.remoteActions || {};
+				this.remoteActions ? "" : (this.remoteActions = this.parent.remoteActions || {});
 			},
 			/**
 			 * 设置数据记录的值
@@ -94,6 +94,13 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 					}) : cfg.success = function(res) {
 						me.afterSave(res);
 						cb(data);
+					};
+				} else {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+						me.afterSave(res);
+						success(data);
+					}) : cfg.success = function(res) {
+						me.afterSave(res);
 					};
 				}
 				return cfg;
@@ -168,6 +175,13 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 						me.afterUpdate(res);
 						cb(data);
 					};
+				} else {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+						me.afterUpdate(res);
+						success(data);
+					}) : cfg.success = function(res) {
+						me.afterUpdate(res);
+					};
 				}
 				return cfg;
 			},
@@ -220,11 +234,11 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 			beforeDelete: function(options) {
 				return options;
 			},
-			delete: function(cb) {
-				var cfg = this.remoteActions["delete"],
+			remove: function(cb) {
+				var cfg = this.remoteActions["remove"],
 					success = null;
 				if (!type.isObject(cfg)) {
-					throw new Error("config of delete action not defined");
+					throw new Error("config of remove action not defined");
 				}
 				cfg.data ? cfg.data["id"] = this.attributes.id : cfg.data = {
 					id: this.attributes.id
@@ -232,12 +246,14 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 				cfg = this.beforeDelete(mergeOpt(cfg, cb));
 				Ds.postJSON(cfg);
 			},
+
 			execRemoteCmd: function(cmd, options) {
 
 			}
 		});
 	Model.create = function(extend) {
 		var fun = Model.extend(extend);
+		fun.prototype.parent = fun;
 
 		function getDataPubToView(dataBind, changedData) {
 			var property = null,
@@ -393,13 +409,30 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 					return record;
 				}
 			},
+			syncClientRecords: function(data) {
+				var me = this,
+					clientData = null,
+					i = 0,
+					r = null;
+				if (type.isArray(data)) {
+					for (; r = data[i]; i++) {
+						clientData = this.records[r.id];
+						//如果客户端没有缓存，则保存；如果已经缓存，则更新
+						if (type.isNull(clientData) || type.isUndefined(clientData)) {
+							this.records[r.id] = data;
+						} else {
+							me.syncClientRecord(r);
+						}
+					}
+				}
+			},
 			/**
 			 * 服务端数据和客户端缓存的数据同步
 			 * @param  {Model or Object} data 要同步的服务端数据或者客户端数据记录
 			 * @return {[type]}              [description]
 			 */
 			syncClientRecord: function(data) {
-				var record = this.records[dataOrRecord.id];
+				var record = this.records[data.id];
 				if (data instanceof this) {
 					data = data.attributes;
 				}
@@ -409,7 +442,7 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 					this.records[record.id] = record;
 				} else {
 					//如果已经存在，则更新数据
-					record.set(dataOrRecord.attributes, true);
+					record.set(data, true);
 				}
 				record.changes = [];
 				record.synced = true;
@@ -429,6 +462,44 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 					return rcd;
 				} else {
 					return this.createRecord(rcd);
+				}
+			},
+			beforeList: function(cfg, cb) {
+				var success = null,
+					me = this;
+				if (typeof cb === "function") {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+						me.afterList(res);
+						success(data);
+						cb(data);
+					}) : cfg.success = function(res) {
+						me.afterList(res);
+						cb(data);
+					};
+				} else {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+						me.afterList(res);
+						success(data);
+					}) : cfg.success = function(res) {
+						me.afterList(res);
+					};
+				}
+				return cfg;
+			},
+			list: function(options, cb) {
+				var cfg = $.extend(this.remoteActions["list"], options),
+					success = null;
+				if (!type.isObject(cfg)) {
+					throw new Error("config of list action not defined");
+				}
+				cfg = this.beforeList(cfg, cb);
+				Ds.postJSON(cfg);
+			},
+			afterList: function() {
+				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
+					var data = res[CONST.RESDATA];
+					this.syncClientRecords(data);
+					//对外公布数据获取信息，渲染列表
 				}
 			},
 			stringify: function() {

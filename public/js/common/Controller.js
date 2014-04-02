@@ -50,27 +50,31 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 	}
 
 	var pub = pubSub.getInstance(),
-		view = evt.extend({
+		Controller = evt.extend({
 			init: function(options) {
 				this._super(options);
 				if (!options.id) {
 					throw new Error("need an id for the controller");
 				}
 				this.pubsub = pubSub.getInstance();
-				this.options = options;
+				this.options = options || {};
 				/*
 				此处应该使用脚本内的资源，例如	i18n资源或者其他一些默认的文字资源、数据资源等，而不应该使用服务端数据
 				在此处使用服务端数据，会阻塞视图的渲染。最佳方案应该给用户显示一个默认界面，提示正在加载数据，要好过
 				等待服务端数据返回以后再渲染界面
 				 */
-				var defaultData = options.defaultData || this.getDefaultData() || {};
+				this.defaultData = this.options.defaultData || null;
+				this.inited = false;
+				if (this.options.selfActive) {
+					this.active();
+					this.inited = true;
+				}
 				if (this.options.View && this.options.Model) {
 					this.View = this.options.View;
 					this.Model = this.options.Model;
-					this.initUI(defaultData);
-					this.initEvent();
+
 					if (type.isObject(this.options.bindData)) {
-						this.Model.bindData = this.options.bindData();
+						this.Model.bindData = this.options.bindData;
 						initPubSubs(Model, View);
 					}
 				}
@@ -112,10 +116,27 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.View.elem.delegate(selector, evtName, this.proxy(handler));
 				}
 			},
-
-			onActive: function() {
-
+			beforeActive: function(next) {
+				if (this.inited === false) {
+					var defaultData = options.defaultData || this.getDefaultData() || {};
+					this.initUI(defaultData);
+					//如果controller定义了路由，则使用路由规则作为事件驱动，如果没有定义路由规则，则使用controller本身的事件来驱动
+					if (!this.options.routes) {
+						this.initEvent();
+					}
+				}
+				next();
 			},
+			active: function() {
+				if (this.actived === false) {
+					var me = this;
+					this.beforeActive(function() {
+						me.actived = true;
+						me.show();
+					})
+				}
+			},
+
 			onDeactive: function() {
 
 			},
@@ -210,6 +231,7 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					}
 				})
 			},
+
 			afterRemove: function(record, res) {
 				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
 					// pubSub.publish(this.getEvtName("msg"), "移除成功");				
@@ -219,6 +241,18 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				} else {
 
 				}
+			},
+			beforeList: function(next) {
+				next();
+			},
+			onList: function() {
+				var me = this;
+				this.beforeList(function() {
+					me.Model.list(me.proxy(me.afterList, me));
+				});
+			},
+			afterList: function(res) {
+
 			},
 			beforeShow: function(next) {
 				next();
@@ -246,5 +280,5 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 
 			}
 		});
-	return view;
+	return Controller;
 })

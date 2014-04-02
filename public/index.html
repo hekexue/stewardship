@@ -4,6 +4,45 @@
 		<link rel="stylesheet" href="./css/index.css">
 	</head>
 	<body>
-			
+			<!-- div.container>div.row>div.col-md-2+div.col-md-10 -->
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-2">
+						
+					</div>
+					<div class="col-lg-10">
+						<div class="panel">
+							<div class="search">
+								
+							</div>
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>产品名称</th>
+											<th>所属企业</th>
+											<th>企业类型</th>
+											<th>风险评价</th>
+											<th>监管方式</th>
+											<th>评价日期</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<!-- tr[data-bind="id"]>td[data-bind=""]*6 -->
+									<tr data-bind="id" id="">
+										<td data-bind="name"></td>
+										<td data-bind="company"></td>
+										<td data-bind="companyType"></td>
+										<td data-bind="riskLevel"></td>
+										<td data-bind="superviseType"></td>
+										<td data-bind="judgeDate"></td>
+										<td ><span class="glyphicon glyphicon-pencil"></span><span class="glyphicon glyphicon-remove"></span></td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 	</body>
 </html>
