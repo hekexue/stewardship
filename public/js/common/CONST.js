@@ -2,8 +2,8 @@ define(["jquery"], function($) {
 	var apiResponseConfig = {
 		RESSTATUS: "_r_",
 		RESSTATUSOK: "ok",
-		RESDATA: "data"
-
+		RESDATA: "data",
+		SERVICEURL: "service/index"
 	},
 		dataSafeConfig = {
 			DATASAFE: true

@@ -39,7 +39,7 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 
 		pubsub.on(instance.id + CONST.MRC, function(id, attr, val, type) {
 			var publishToModel = false;
-			instance.View.onRecordChange(id, attr, val, publishToModel, type);
+			instance.View.parent.onRecordChange(id, attr, val, publishToModel, type);
 		});
 		// // pubSub.on(instance.id + "Model:RecordAdd", function(record) {
 		// //	instance.View.onRecordAdd(record, false);
@@ -51,9 +51,11 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 
 	var pub = pubSub.getInstance(),
 		Controller = evt.extend({
+			actived: false,
 			init: function(options) {
+				options ? "" : options = {};
 				this._super(options);
-				if (!options.id) {
+				if (!options.id && !this.id) {
 					throw new Error("need an id for the controller");
 				}
 				this.pubsub = pubSub.getInstance();
@@ -69,26 +71,26 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.active();
 					this.inited = true;
 				}
-				if (this.options.View && this.options.Model) {
-					this.View = this.options.View;
-					this.Model = this.options.Model;
+				//if (this.options.View && this.options.Model) {
+				this.View = this.View ? this.View : this.options.View;
+				this.Model = this.Model ? this.Model : this.options.Model;
 
-					if (type.isObject(this.options.bindData)) {
-						this.Model.bindData = this.options.bindData;
-						initPubSubs(Model, View);
-					}
+				if (type.isObject(this.options.bindData)) {
+					this.Model.bindData = this.options.bindData;
+					initPubSubs(Model, View);
 				}
+				//}
 			},
 			getEvtName: function(name) {
 				return this.id + name;
 			},
-			beforeRender: function(next) {
-				//getData
+			beforeRender: function(data, next) {
+				//changeData 
 				next(data);
 			},
 			render: function(data) {
 				var me = this;
-				this.beforeRender(function(data) {
+				this.beforeRender(data, function(data) {
 					me.View.render(data);
 					me.afterRender.apply(me, arguments);
 				});
@@ -116,9 +118,12 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.View.elem.delegate(selector, evtName, this.proxy(handler));
 				}
 			},
+			getDefaultData: function() {
+				return {};
+			},
 			beforeActive: function(next) {
 				if (this.inited === false) {
-					var defaultData = options.defaultData || this.getDefaultData() || {};
+					var defaultData = this.options.defaultData || this.getDefaultData() || {};
 					this.initUI(defaultData);
 					//如果controller定义了路由，则使用路由规则作为事件驱动，如果没有定义路由规则，则使用controller本身的事件来驱动
 					if (!this.options.routes) {
@@ -148,7 +153,7 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			onAdd: function() {
 				var record = this.beforeAdd();
 				//bind View, the view state should be "add"
-				this.View.showAdd();
+				this.View.showAdd(record);
 				this.afterAdd();
 			},
 			afterAdd: function() {
@@ -209,7 +214,7 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			afterUpdate: function(record, res) {
 				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
 					this.View.msg("更新成功");
-					this.View.onUpdateRecord(record);
+					this.View.afterUpdateRecord(record);
 				} else {
 
 				}
@@ -258,9 +263,10 @@ define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				next();
 			},
 			show: function() {
+				var me = this;
 				this.beforeShow(function() {
 					me.View.show.apply(me.View, arguments);
-					me.afterShow.apply(me.View, arguments);
+					me.afterShow.apply(me, arguments);
 				})
 			},
 			afterShow: function() {

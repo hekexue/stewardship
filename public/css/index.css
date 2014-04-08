@@ -1,2 +1,10 @@
 @import url("./base/css/bootstrap.min.css");
-@import url("./base/css/bootstrap-tab.css");
+@import url("./stewardshipTable.css");
+.main{margin-top:20px;}
+.green{color:green; text-decoration: none;}
+.red{color:red;text-decoration: none;}
+.search{margin-bottom:40px;}
+.action{margin-left:20px;}
+#addProduct{margin-top: 200px;}
+#addProduct .backlog{ height: 120px;}
+#stewradshipTable .modal-dialog{width: 98%;}

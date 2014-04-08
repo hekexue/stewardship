@@ -1,12 +1,24 @@
-define(["jquery", "./Type", "./ErrorManager", "./CONST", "./JSON"], function($, type, errorManager, sysConst, JSON) {
+define(["jquery", "../lib/Type", "./ErrorManager", "./CONST", "./JSON"], function($, type, errorManager, sysConst, JSON) {
 	function transfer(method, options, dataType) {
 		var cb = success(options.success, options.onGlobalError),
 			err = fail(options.fail || function() {}),
+			url = CONST.SERVICEURL,
+			data = null;
+		if (CONST.BACKENDMVC === true) {
+			// if (true) {
+			//如果后端服务API也采用MVC模式，则直接根据前端参数拼接后端MVC的url
+			url = CONST.SERVICEURLPRIFX || "" + "/" + options.controller + "/" + options.action;
+			data = JSON.stringify({
+				data: options.data
+			});
+		} else {
 			data = JSON.stringify({
 				controller: options.controller || "",
 				action: options.action || "",
 				data: options.data || {}
 			});
+		}
+
 		delete options.controller;
 		delete options.action;
 		delete options.data;
@@ -15,7 +27,7 @@ define(["jquery", "./Type", "./ErrorManager", "./CONST", "./JSON"], function($, 
 
 		return jQuery.ajax($.extend({
 			type: method,
-			url: CONST.serviceUrl,
+			url: url,
 			data: data,
 			success: cb,
 			fail: err,
@@ -23,7 +35,7 @@ define(["jquery", "./Type", "./ErrorManager", "./CONST", "./JSON"], function($, 
 		}, options));
 	}
 
-	function sussess(callback, onGlobalError) {
+	function success(callback, onGlobalError) {
 		return function(res) {
 			var globalErr = (("," + CONST.GLOBALERROR.join(",") + ",").indexOf("," + res._r_ + ",") > -1);
 			if (globalErr) {
@@ -93,7 +105,7 @@ define(["jquery", "./Type", "./ErrorManager", "./CONST", "./JSON"], function($, 
 				}
 
 				!format && (method = CONST.METHOD);
-				transfer(method, options, format);
+				transfer(method, option, format);
 			},
 			postJSON: function(options) {
 				if (!type.isObject(options)) {
