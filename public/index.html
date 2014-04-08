@@ -1,61 +1,91 @@
 <html>
-	<head>
-		<meta charset="utf-8"/>
-		<link rel="stylesheet" href="./css/index.css">
-	</head>
-	<body>
-		<!-- div.container>div.row>div.col-md-2+div.col-md-10 -->
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="tabbable tabs-left">
-						<ul class="nav nav-tabs">
-							<li class="active"><a href="#">产品</a></li>
-						<li><a href="#">qiye</a></li>
-						</ul>
-						<div class="tab-content">
-							<div class="panel  panel-primary">
-						<div class="panel-heading">Product Stewardship</div>
-						<div class="panel-body">
-							<div class="search">
-								<div class="input-group input-group-lg">
-									<input type="text" class="form-control"/>
-									<span class="input-group-btn">
-									<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-									</span>
-								</div>
-							</div>
-							<div class="table-responsive">
-								<table class="table table-bordered table-hover">
-									<thead>
-										<tr>
-											<th>产品名称</th>
-											<th>所属企业</th>
-											<th>企业类型</th>
-											<th>风险评价</th>
-											<th>监管方式</th>
-											<th>评价日期</th>
-											<th>操作</th>
-										</tr>
-									</thead>
-									<!-- tr[data-bind="id"]>td[data-bind=""]*6 -->
-									<tr data-bind="id" id="">
-										<td data-bind="name"></td>
-										<td data-bind="company"></td>
-										<td data-bind="companyType"></td>
-										<td data-bind="riskLevel"></td>
-										<td data-bind="superviseType"></td>
-										<td data-bind="judgeDate"></td>
-										<td ><span class="glyphicon glyphicon-pencil"></span><span class="glyphicon glyphicon-remove"></span></td>
-									</tr>
-								</table>
-							</div>
+<head>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" href="./css/index.css"></head>
+<body>
+	<!-- div.container>
+	div.row>div.col-md-2+div.col-md-10 -->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div id="nav-area">
+					<nav class="navbar navbar-default " role="navigation">
+						<!-- Brand and toggle get grouped for better mobile display -->
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="#">LOGO</a>
 						</div>
-					</div>
+						<!-- Collect the nav links, forms, and other content for toggling -->
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li class="active">
+									<a href="#">产品</a>
+								</li>
+								<li>
+									<a href="#">企业</a>
+								</li>
+							</ul>
 						</div>
-					</div>					
-				</div>				
+						<!-- /.navbar-collapse -->
+					</nav>
+				</div>
+				<div id="mainView">
+					
+				</div>
 			</div>
 		</div>
-	</body>
+	</div>	
+	<script data-main="./js/index" src="./js/common/require.js"></script>
+	<!--<script src="./js/common/jquery-1.10.2.min.js"></script>
+	<script src="./css/base/js/bootstrap.min.js"></script>
+	<script>
+		$('#navtab a').click(function (e) {
+		  e.preventDefault()
+		  $(this).tab('show')
+		})
+	</script>
+	<script type="text/javascript">
+		var table = $('table'),
+		thead = table.find("thead");
+		function hoverhandler (e) {
+			var td = $(this).closest("td"),
+			tr = td.closest("tr"),
+			rowNum =td.attr("row"),
+			colNum = td.attr("col"),
+			row = table.find("td[row="+rowNum+"]:lt("+(colNum-1)+")"),
+			col =  table.find("td[col="+colNum+"]:lt("+(rowNum-1)+")");
+			if(e.type=="mouseenter"||e.type=="focusin"){
+				table.find("td,th").removeClass("border-top border-bottom border-left border-right");				
+				row.addClass("border-top border-bottom");
+				col.addClass("border-left border-right");
+				td.addClass("ms-hover border-right border-bottom");
+				td.closest("tr").find(".row-title").addClass("border-top border-bottom border-left");
+				thead.find("th[col="+colNum+"]").addClass("border-top border-left border-right");
+			}else{
+				row.removeClass("border-top border-bottom");
+				col.removeClass("border-left border-right");
+				td.removeClass("ms-hover border-right border-bottom");
+				td.closest("tr").find(".row-title").removeClass("border-top border-bottom border-left");
+				thead.find("th[col="+colNum+"]").removeClass("border-top border-left border-right");
+			}
+		}
+		table.delegate("td[col]","hover",hoverhandler);
+		table.delegate(".ipt","focus",hoverhandler);
+		table.delegate(".ipt","blur",hoverhandler);
+		table.delegate(".check","click",function(){
+			var td = $(this).closest("td");
+			td.siblings().removeClass("checked");
+			td.addClass("checked");
+		})
+		table.delegate(".ipt","change",function  () {
+			var ipt = $(this),tr = ipt.closest("tr").find(".ipt[]")
+		})
+	</script>
+	-->
+</body>
 </html>
