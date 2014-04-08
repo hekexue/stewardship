@@ -26,6 +26,9 @@ define(function() {
 		isUndefined: function(obj) {
 			return toString.call(obj) === "[object Undefined]";
 		},
+		isExist: function(obj) {
+			return !this.isNull(obj) && !this.isUndefined(obj);
+		},
 		isNaN: function(obj) {
 			return obj != obj;
 		},

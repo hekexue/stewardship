@@ -47,7 +47,7 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 		CONST = cst,
 		Model = Evt.extend({
 			init: function(options) {
-				this.Class = this.prototype.constructor;
+				options ? "" : options = {};
 				this._super(options);
 				//this.parent = options.parent || Model;
 				this.attributes = options.data || {};
@@ -487,7 +487,7 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 				return cfg;
 			},
 			list: function(options, cb) {
-				var cfg = $.extend(this.remoteActions["list"], options),
+				var cfg = $.extend(this.prototype.remoteActions["list"], options),
 					success = null;
 				if (!type.isObject(cfg)) {
 					throw new Error("config of list action not defined");
@@ -521,6 +521,6 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 		return fun;
 	}
 	//将model原有的继承方式改为创建方式，有别于其他类的继承
-	Model.extend = Model.create;
+	//Model.extend = Model.create;
 	return Model;
 })

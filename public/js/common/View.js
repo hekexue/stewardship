@@ -1,4 +1,4 @@
-define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'], function($, pubSub, evt, type, Template) {
+define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'], function($, pubSub, evt, type, Tmpl) {
 	/**
 	 * 视图实例，在初始化的时候，可以传递一个模板，或者传递一个elem 或者传递一个 css选择器
 	 * 如果传递了elem，则优先使用elem作为对象，
@@ -22,30 +22,33 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'],
 	}
 	var pub = pubSub.getInstance(),
 		View = evt.extend({
+
 			init: function(options) {
-				var ckres = optionCheck(options);
+				this.options = this.options ? this.options : options || {};
+				var ckres = optionCheck(this.options);
 				if (ckres !== true) {
 					throw new Error(ckres);
 				}
-				this._super();
-				this.options = options || {};
-				this.initEvent();
+				this._super(this.options);
+				//this.initEvent();
 				this.rendered = false;
 			},
 			initUI: function() {
-				type.isDom(this.options.elem) || type.isObject(this.options.elem) ? this.elem = this.options.elem : (this.elem = null);
+				type.isDom(this.options.elem) || type.isObject(this.options.elem) ? this.parent.elem = this.elem = this.options.elem : (this.elem = null);
 			},
 			initEvent: function() {
-				this.elem.delegate("change", function(e) {
-					//监听表单字段的变更，将结果对外广播
-					var target = $(e.target),
-						attr = target.attr("data-bind"),
-						val = target.val(),
-						id = instance.getRecordIdByEvt(e),
-						publishToModel = this.parent.publishToModel;
-					pubsub.publish("", id, attr, val, publishToModel);
-					this.parent.publishToModel = true;
-				})
+				if (this.elem) {
+					this.elem.on("change", function(e) {
+						//监听表单字段的变更，将结果对外广播
+						var target = $(e.target),
+							attr = target.attr("data-bind"),
+							val = target.val(),
+							id = instance.getRecordIdByEvt(e),
+							publishToModel = this.parent.publishToModel;
+						pubsub.publish("", id, attr, val, publishToModel);
+						this.parent.publishToModel = true;
+					})
+				}
 			},
 			getRecordIdByEvt: function(e) {
 
@@ -58,13 +61,44 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'],
 			},
 			render: function(data) {
 				var elem = $(Tmpl.tmpl(this.options.template, data));
-				if (type.isNull(this.elem)) {
-					this.elem = elem;
+				if (!type.isExist(this.elem)) {
+					this.parent.elem = this.elem = elem;
 				}
 				this.afterRender();
 			},
+			renderEl: function(tmpl, data) {
+				var elContainer = "",
+					replace = true,
+					renderMethod = "",
+					el = null;
+				if (arguments.length === 2) {
+					return $(Tmpl.tmpl(tmpl, data));
+				}
+				elContainer = arguments[3];
+				renderMethod = arguments[4];
+				el = $(Tmpl.tmpl(tmpl, data));
+				if (type.isDom(elContainer) || type.isString(elContainer)) {
+					elContainer = $(elContainer);
+				}
+				if (type.isObject(elContainer) && elContainer instanceof $) {
+					if (renderMethod) {
+						elContainer[renderMethod](el);
+					} else {
+						elContainer.append(el);
+					}
+				}
+			},
 			afterRender: function() {
 				this.initEvent();
+			},
+			showAdd: function() {
+				throw new Error("需要对该方法做继承");
+			},
+			afterSaveRecord: function() {
+				throw new Error("需要对该方法做继承");
+			},
+			afterUpdateRecord: function() {
+				throw new Error("需要对该方法做继承");
 			},
 			show: function() {
 				var parentEl = null;
@@ -88,6 +122,15 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'],
 				} else {
 					this.elem.hide();
 				}
+			},
+			msg: function(msg) {
+				alert(msg);
+			},
+			error: function(msg) {
+				alert(msg)
+			},
+			confirm: function(msg, cb) {
+
 			}
 		});
 	//定义类方法
@@ -114,15 +157,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'],
 						dom.find("[data-bind=" + i + "]").val(attr[i]);
 					}
 				}
-			},
-			onUpdateRecord: function(id, attr, val, publishToModel) {
-				//数据记录更新以后，
-			},
-			onRecordRemove: function(record) {
-				//
 			}
 		});
 		return fun;
 	}
-	return view;
+	return View;
 })

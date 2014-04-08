@@ -1,5 +1,6 @@
 define(["../common/Model"], function(Model) {
 	var CompanyModel = Model.create({
+		id: "company",
 		remoteActions: {
 			save: {
 				controller: "company",

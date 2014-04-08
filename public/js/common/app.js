@@ -1,31 +1,23 @@
 /*
 负责初始化路由配置，模块激活、禁用机制，同时负责大型单页面模块延迟加载
  */
-define(["./ClassBase", "../lib/JqueryHistory", "../lib/Type", "../lib/PubSub", "../lib/PackageLoader"], function(Class, history, type, PubSub, PkgLoader) {
-	function route() {
-		//解析当前URL
-		//根据URL首个配置确定哪个Controller处于激活状态
-		//读取模块内部的路由配置，解析第二个URL的内容，为需要调用的方法
-		//解析第三个URL的内容，为该方法需要的参数
-	}
-
+define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib/PubSub", "../lib/PackageLoader"], function(Class, Route, history, type, PubSub, PkgLoader) {
 	function getHash(window) {
 		var match = (window || this).location.href.match(/#(.*)$/);
 		return match ? match[1] : '';
 	}
-
 	var App = Class.extend({
 		init: function(options) {
 			var me = this,
-				controllers = options.controllers,
+				//controllers = options.controllers,
 				routes = options.routes || {},
 				defaultModules = options.defaultModules,
 				lazyModules = options.lazyModules;
 			this.defaultModules = defaultModules;
 			this.lazyModules = lazyModules;
-			if (!type.isObject(controllers)) {
-				throw new Error("");
-			}
+			// if (!type.isObject(controllers)) {
+			//	throw new Error("");
+			// }
 			if (!type.isArray(defaultModules)) {
 				throw new Error("app need a defaultModule param which tells what module code load first");
 			}
@@ -44,33 +36,56 @@ define(["./ClassBase", "../lib/JqueryHistory", "../lib/Type", "../lib/PubSub", "
 				})
 			}
 			if (type.isObject(routes)) {
-				this.initRoutes();
+				this.initRoutes(routes);
+			}
+		},
+		convertRoutes: function(routes) {
+			if (!type.isObject(this.routes)) {
+				this.routes = {};
+			}
+			for (var r in routes) {
+				r = Route.routeToRegExp(r);
+				//转换路由为正则表达式
+				this.routes[r] = routes[r];
 			}
 		},
 		initRoutes: function(routes) {
 			var me = this,
-				controllers = this.controller,
 				hash = "",
 				map = [],
-				module,
+				handler,
+				context,
+				extraParam,
+				ctrl,
 				action,
 				params;
-			history.init(function() {
+			history.history.init(function() {
 				hash = getHash();
-				map = hash.split("/");
-				module = map[0],
-				action = map[1],
-				params = type.isString(map[2]) ? decodeURIComponent(map[2]) : "";
-				controller = controllers[module];
-				if (type.isObject(controller)) {
-					if (!controller.actived) {
-						controller.active();
-						controller.actived = true;
+				if (hash) {
+					ctrl = me.controllers[hash.substring(0, hash.indexOf("/"))];
+					if (type.isObject(ctrl)) {
+						if (!ctrl.actived) {
+							ctrl.active();
+						}
 					}
-					if (type.isArray) {
-						type.isFunction(controller[action]) && controller[action].apply(controller, params);
+					for (var rt in routes) {
+						if (rt.test(hash)) {
+							params = Route.extractParameters(rt, hash);
+							action = routes[rt];
+							if (type.isString(action)) {
+								action = ctrl[action];
+								action.apply(ctrl, params);
+							} else if (type.isFunction(action)) {
+								action.apply(null, params);
+							} else if (type.isObject(action)) {
+								handler = action["handler"];
+								context = action["context"];
+								extraParam = action["params"];
+								type.isArray(extraParam) ? params = params.concat(action["params"]) : !type.isNull(extraParam) && !type.isUndefined(extraParam) ? params.push(extraParam) : "";
+								handler.apply(context, params);
+							}
+						}
 					}
-					controller[action].call(controller, params);
 				}
 			});
 		},
@@ -79,35 +94,38 @@ define(["./ClassBase", "../lib/JqueryHistory", "../lib/Type", "../lib/PubSub", "
 				allLoadedCallback: "",
 				scope: '',
 				extraData: "",
-				resources: [{
-					urls: ["../file/name"], //符合requirejs的参数，TODO:此处的依赖路径要填写packageLoader即utils文件夹的位置，应该支持成当前调用文件所在的文件夹的相对路径
-					callback: function(res) {
-						var Controller = res,
-							ctrl = new Controller();
-						ctrl.active();
-					}, //当前资源组加载完成后的回调函数
-					scope: null || window, //回调函数的作用域
-					extraData: null //任意回调函数需要的额外的参数
-				}, {
-					urls: ["../file/name"],
-					callback: function() {},
-					scope: null || window,
-					extraData: null
-				}]
+				resources: lazyModules
 			});
 			loader.load();
 		},
 		beforeStart: function() {
 
 		},
+		regist: function(name, module) {
+			if (type.isString(name) && type.isObject(module)) {
+				if (!type.isObject(this.controllers)) {
+					this.controllers = {};
+				}
+				this.controllers[name] = module;
+			}
+		},
+		route: function(route, handler) {
+			if (type.isObject(routes)) {
+				for (var r in routes) {
+					if (!this.routes[r]) {
+						this.routes[r] = routes[r];
+					}
+				}
+			}
+		},
 		start: function() {
 			//加载默认模块
 			var modules = this.defaultModules,
 				lazyModules = this.lazyModules,
 				module = null;
-			for (var m in modules) {
-				if (type.isObject(m)) {
-					m.active();
+			for (var i = 0, c = null; c = modules[i]; i++) {
+				if (type.isObject(c)) {
+					c.active();
 				}
 			}
 		}
