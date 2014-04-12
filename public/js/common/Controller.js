@@ -1,4 +1,4 @@
-define(['jquery', '../lib/pubSub', '../lib/Event', '../lib/Type', './CONST'], function($, pubSub, evt, type, cst) {
+define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], function($, pubSub, evt, type, cst) {
 	/**
 	 * Controller实例，在初始化的时候，可以传递一个模板，或者传递一个elem 或者传递一个 css选择器
 	 * 如果传递了elem，则优先使用elem作为对象，

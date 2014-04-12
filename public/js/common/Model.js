@@ -1,4 +1,4 @@
-define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", "../lib/Type"], function($, Ds, pubSub, Evt, cst, type) {
+define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", "../lib/Type"], function($, Ds, pubSub, Evt, cst, type) {
 
 	function mergeOpt(cfg, cb) {
 		var success = null;
@@ -87,18 +87,18 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 				var success = null,
 					me = this;
 				if (typeof cb === "function") {
-					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(res) {
 						me.afterSave(res);
-						success(data);
-						cb(data);
+						success(res);
+						cb(res);
 					}) : cfg.success = function(res) {
 						me.afterSave(res);
-						cb(data);
+						cb(res);
 					};
 				} else {
-					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(res) {
 						me.afterSave(res);
-						success(data);
+						success(res);
 					}) : cfg.success = function(res) {
 						me.afterSave(res);
 					};
@@ -167,18 +167,18 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 
 				//合并回调函数
 				if (typeof cb === "function") {
-					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(res) {
 						me.afterUpdate(res);
-						success(data);
-						cb(data);
+						success(res);
+						cb(res);
 					}) : cfg.success = function(res) {
 						me.afterUpdate(res);
-						cb(data);
+						cb(res);
 					};
 				} else {
-					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(res) {
 						me.afterUpdate(res);
-						success(data);
+						success(res);
 					}) : cfg.success = function(res) {
 						me.afterUpdate(res);
 					};
@@ -468,18 +468,18 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 				var success = null,
 					me = this;
 				if (typeof cb === "function") {
-					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(res) {
 						me.afterList(res);
-						success(data);
-						cb(data);
+						success(res);
+						cb(res);
 					}) : cfg.success = function(res) {
 						me.afterList(res);
-						cb(data);
+						cb(res);
 					};
 				} else {
-					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
+					typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(res) {
 						me.afterList(res);
-						success(data);
+						success(res);
 					}) : cfg.success = function(res) {
 						me.afterList(res);
 					};
@@ -495,7 +495,7 @@ define(["jquery", "./DataSource", "../lib/Pubsub", "../lib/Event", "./CONST", ".
 				cfg = this.beforeList(cfg, cb);
 				Ds.postJSON(cfg);
 			},
-			afterList: function() {
+			afterList: function(res) {
 				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
 					var data = res[CONST.RESDATA];
 					this.syncClientRecords(data);

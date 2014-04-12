@@ -9,9 +9,9 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			var win = "";
 			if (!this.addWinInited) {
 				this.addWinInited = true;
-				this.renderEl(tmpl.add(), record, "body", "append");
+				this.renderEl(tmpl.add(), {"data":record}, "body", "append");
 			}
-			$("#stewradshipWindow").show();
+			$("#addProduct").modal();
 		},
 		showEdit: function(record) {
 			var win = "";
@@ -19,7 +19,8 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 				this.addWinInited = true;
 				this.renderEl(tmpl.record(), record, "#recordForm", "replace");
 			}
-			$("#stewradshipWindow").show();
+			//$('#myModal').modal(options)
+			$("#stewradshipWindow").modal();
 		},
 		afterSaveRecord: function() {
 			$("#stewradshipWindow").hide();

@@ -4,8 +4,13 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 		Model: Model,
 		id: "product",
 		afterShow: function() {
-			this.Model.list({}, function(data) {
-				this.View.renderList(data);
+			var me = this;
+			this.Model.list({}, function(res) {		
+				if(res._r_=="ok"){
+					me.View.renderList(res);
+				}else{
+					me.View.error(res._r_);
+				}
 			});
 		}
 	});

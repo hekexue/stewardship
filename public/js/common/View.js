@@ -1,4 +1,4 @@
-define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'], function($, pubSub, evt, type, Tmpl) {
+define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', './Template'], function($,boot, pubSub, evt, type, Tmpl) {
 	/**
 	 * 视图实例，在初始化的时候，可以传递一个模板，或者传递一个elem 或者传递一个 css选择器
 	 * 如果传递了elem，则优先使用elem作为对象，
@@ -74,8 +74,8 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template'],
 				if (arguments.length === 2) {
 					return $(Tmpl.tmpl(tmpl, data));
 				}
-				elContainer = arguments[3];
-				renderMethod = arguments[4];
+				elContainer = arguments[2];
+				renderMethod = arguments[3];
 				el = $(Tmpl.tmpl(tmpl, data));
 				if (type.isDom(elContainer) || type.isString(elContainer)) {
 					elContainer = $(elContainer);

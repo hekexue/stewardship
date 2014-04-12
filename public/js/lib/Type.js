@@ -12,7 +12,7 @@ define(function() {
 			return toString.call(obj) === "[object Number]";
 		},
 		isDom: function(obj) {
-			return domReg.test(Obj.toString.call(obj)); // === "[object HTMLDOMObject]"
+			return domReg.test(obj.toString.call(obj)); // === "[object HTMLDOMObject]"
 		},
 		isArray: function(obj) {
 			return toString.call(obj) === "[object Array]";

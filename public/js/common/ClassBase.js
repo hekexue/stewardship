@@ -67,7 +67,7 @@ define(function() {
 			var me = this,
 				args = Array.prototype.slice.call(arguments, 2);
 			return function() {
-				args = args.concat(arugments);
+				args = args.concat(arguments);
 				return fn.apply(scope ? scope : me, args);
 			}
 		}

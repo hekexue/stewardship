@@ -1,6 +1,6 @@
 
 var username="program",
-	password="program",
+	password="programuser",
 	mongoHost="localhost",
 	mongoPort="",
 	mongoBase="productstewardship",

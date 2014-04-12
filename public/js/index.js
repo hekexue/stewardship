@@ -1,6 +1,7 @@
 require.config({
 	paths: {
-		"jquery": "./common/jquery-1.10.2.min"
+		"jquery": "./common/jquery-1.10.2.min",
+		"bootstrap":"../css/base/js/bootstrap.min"
 	}
 });
 define(['./common/App', './product/product-control'], function(App, Product) {

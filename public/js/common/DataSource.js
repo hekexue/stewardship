@@ -27,8 +27,8 @@ define(["jquery", "../lib/Type", "./ErrorManager", "./CONST", "./JSON"], functio
 
 		return jQuery.ajax($.extend({
 			type: method,
-			url: url,
-			data: data,
+			url: url,			
+			data: "data="+data,
 			success: cb,
 			fail: err,
 			dataType: dataType
