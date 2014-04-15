@@ -187,7 +187,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			beforeSave: function(record, next) {
 				var msg = record.validCheck();
 				if (msg === true) {
-					next(record);
+					next(record); 
 				} else {
 					this.View.error(msg);
 				}

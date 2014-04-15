@@ -7,6 +7,9 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 		},
 		getRecordIdByEvt:function(e) {
 			var id = $(e.target).closest("form").attr("data-id");
+			if(id === undefined){
+				id = $("#tabProduct").find("form").attr("data-id");
+			}
 			return id;
 		},
 		showAdd: function(record) {

@@ -2,6 +2,10 @@ var db = require("../lib/simplemongo"),
 	type = require("../lib/type"),
 	logger = console;
 module.exports = {
+	validCheck: function(data) {
+		//TODO:check data 
+		return true;
+	},
 	list: function(data, callback) {
 		var query = {};
 		if (data) {
@@ -12,19 +16,37 @@ module.exports = {
 				var hasErr = false;
 				if (err) {
 					logger.log(err);
-					callback(err,"");
+					callback(err, "");
 					return;
 				}
-				result.toArray(function(err,docs){
-					if(err){
+				result.toArray(function(err, docs) {
+					if (err) {
 						logger.log(err);
-						callback(err,"");
-						return ;
+						callback(err, "");
+						return;
 					}
-					callback("ok",docs);	
+					callback("ok", docs);
 				})
-				
 			})
+		}
+	},
+	add: function(data, callBack) {
+		var ckres = this.validCheck(data);
+		if (ckres === true) {
+			console.log(data);
+			if (type.isFunction(callBack)) {
+				db.insert("product", data.record, null, function(err, doc) {
+					if (err) {
+						logger.log(err);
+						callback(err, "");
+						return;
+					}
+					doc.id = doc._id;
+					callBack("ok", doc);
+				})
+			}
+		} else {
+			callBack(ckres, null);
 		}
 	}
 }

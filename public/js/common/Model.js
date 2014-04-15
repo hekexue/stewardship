@@ -60,7 +60,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				this._super(options);
 				//this.parent = options.parent || Model;
 				this.attributes = options.data || {};
-				this.id = this.attributes.id || 0;
+				this.id = this.attributes._id || 0;
 				this.original = $.extend({}, this.attributes);
 				this.changes = [];
 				this.synced = false;
@@ -87,6 +87,9 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 					}
 					return this.parent.set(this.id, attr, publishToView, arguments[1]);
 				}
+			},
+			validCheck: function() {
+				return true;
 			},
 			/**
 			 * 保存之前，合并回调函数，在合并的回调函数中，触发afterSave事件处理函数
@@ -157,13 +160,13 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				//判断是否全部更新还是部分更新
 				if (updateAll) {
 					postData = {
-						"id": this.attributes.id,
+						"id": this.attributes._id,
 						"updateType": "all",
 						"data": this.attributes
 					}
 				} else {
 					postData = {
-						"id": this.attributes.id,
+						"id": this.attributes._id,
 						"updateType": "partial",
 						"data": getUpdateProperty(this)
 					}
@@ -217,7 +220,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			 */
 			afterUpdate: function(res) {
 				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
-					var data = res[CONST.RESDATA];
+					var data = res[CONST.RESDATA];					
 					this.parent.syncClientRecord(data);
 				}
 			},
@@ -235,8 +238,8 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				if (!type.isObject(cfg)) {
 					throw new Error("config of read action not defined");
 				}
-				cfg.data ? cfg.data["id"] = this.attributes.id : cfg.data = {
-					id: this.attributes.id
+				cfg.data ? cfg.data["id"] = this.attributes._id : cfg.data = {
+					id: this.attributes._id
 				}
 				cfg = this.beforeRead(mergeOpt(cfg, cb));
 				Ds.postJSON(cfg);
@@ -250,8 +253,8 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				if (!type.isObject(cfg)) {
 					throw new Error("config of remove action not defined");
 				}
-				cfg.data ? cfg.data["id"] = this.attributes.id : cfg.data = {
-					id: this.attributes.id
+				cfg.data ? cfg.data["id"] = this.attributes._id : cfg.data = {
+					id: this.attributes._id
 				}
 				cfg = this.beforeDelete(mergeOpt(cfg, cb));
 				Ds.postJSON(cfg);
@@ -313,7 +316,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				var record = null;
 				if (CONST.DATASAFE) { //如果对数据一致性及安全性要求很高，则始终从服务端获取数据
 					record = this.createRecord({
-						id: rid
+						_id: rid
 					});
 					getRemoteRecord(this, record, cb);
 					//检测是否
@@ -322,7 +325,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 					record = this.find(rid);
 					if (type.isNull(record)) {
 						record = this.createRecord({
-							id: rid
+							_id: rid
 						});
 						getRemoteRecord(this, record, cb);
 					} else {
@@ -350,7 +353,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				if (arguments.length == 0 || (arguments.length == 1 && type.isBoolean(data))) {
 					publishToView = data,
 					data = {
-						id: "0"
+						_id: "0"
 					};
 				}
 				var me = this,
@@ -358,6 +361,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 						parent: me,
 						data: data
 					});
+				record.id = record.attributes._id;
 				this.records[record.id] = record;
 				if (publishToView) {
 					pubsub.publish(this.id + "View:CreateRecord", record);
@@ -449,10 +453,10 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			 * @return {[type]}              [description]
 			 */
 			syncClientRecord: function(data) {
-				var record = this.records[data.id];
 				if (data instanceof this) {
 					data = data.attributes;
 				}
+				var record = this.records[data._id];				
 				//如果客户端没有缓存该记录，则创建一个数据记录，然后缓存
 				if (type.isUndefined(record) || type.isNull(record)) {
 					record = this.createRecord(data);
