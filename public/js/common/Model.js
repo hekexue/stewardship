@@ -18,8 +18,17 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 	}
 
 	function checkChange(instance, attr, val) {
+		var needpush = true;
 		if (instance.original[attr] !== val) {
-			instance.changes.push(attr);
+			for (var i = 0, len = instance.changes.length; i < len; i++) {
+				if (instance.changes[i] === attr) {
+					needpush = false;
+					break;
+				}
+			}
+			if (needpush) {
+				instance.changes.push(attr);
+			}
 		} else {
 			for (var j = 0, len = instance.changes.length; j < len; j++) {
 				if (instance.changes[j] === attr) {
@@ -51,6 +60,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				this._super(options);
 				//this.parent = options.parent || Model;
 				this.attributes = options.data || {};
+				this.id = this.attributes.id || 0;
 				this.original = $.extend({}, this.attributes);
 				this.changes = [];
 				this.synced = false;
@@ -337,11 +347,18 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			 * @return {[type]}               一条新的、空数据记录
 			 */
 			createRecord: function(data, publishToView) {
+				if (arguments.length == 0 || (arguments.length == 1 && type.isBoolean(data))) {
+					publishToView = data,
+					data = {
+						id: "0"
+					};
+				}
 				var me = this,
 					record = new this({
 						parent: me,
 						data: data
 					});
+				this.records[record.id] = record;
 				if (publishToView) {
 					pubsub.publish(this.id + "View:CreateRecord", record);
 				}
@@ -454,7 +471,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			 * @return {[type]}    [description]
 			 */
 			find: function(id) {
-				var rcd = this.records[i];
+				var rcd = this.records[id];
 				if (type.isNull(rcd) || type.isUndefined(rcd)) {
 					return null;
 				}

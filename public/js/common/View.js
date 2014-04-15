@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', './Template'], function($,boot, pubSub, evt, type, Tmpl) {
+define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template','./CONST'], function($, boot, pubSub, evt, type, Tmpl,CONST) {
 	/**
 	 * 视图实例，在初始化的时候，可以传递一个模板，或者传递一个elem 或者传递一个 css选择器
 	 * 如果传递了elem，则优先使用elem作为对象，
@@ -20,16 +20,17 @@ define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', '.
 		// }
 		return true;
 	}
-	var pub = pubSub.getInstance(),
+	var pubsub = pubSub.getInstance(),
 		View = evt.extend({
-
 			init: function(options) {
 				this.options = this.options ? this.options : options || {};
 				var ckres = optionCheck(this.options);
+
 				if (ckres !== true) {
 					throw new Error(ckres);
 				}
 				this._super(this.options);
+				this.id = this.options.id;
 				//this.initEvent();
 				this.rendered = false;
 			},
@@ -37,21 +38,22 @@ define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', '.
 				type.isDom(this.options.elem) || type.isObject(this.options.elem) ? this.parent.elem = this.elem = this.options.elem : (this.elem = null);
 			},
 			initEvent: function() {
+				var me = this;
 				if (this.elem) {
 					this.elem.on("change", function(e) {
 						//监听表单字段的变更，将结果对外广播
 						var target = $(e.target),
 							attr = target.attr("data-bind"),
 							val = target.val(),
-							id = instance.getRecordIdByEvt(e),
-							publishToModel = this.parent.publishToModel;
-						pubsub.publish("", id, attr, val, publishToModel);
-						this.parent.publishToModel = true;
+							id = me.getRecordIdByEvt(e),
+							publishToModel = me.parent.publishToModel;
+						pubsub.publish(me.id + CONST.VRC, id, attr, val, publishToModel);
+						me.parent.publishToModel = true;
 					})
 				}
 			},
 			getRecordIdByEvt: function(e) {
-
+				throw new Error("需要对该方法做继承");
 			},
 			onActive: function() {
 
@@ -139,7 +141,7 @@ define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', '.
 		fun.prototype.parent = fun;
 
 		function getDomId(view, dataId) {
-			return view.id + view.type + dataId;
+			return view.id + "-" + view.type + "-" + dataId;
 		}
 		//生成类方法
 		fun.ext({
@@ -148,7 +150,7 @@ define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', '.
 				//使用代码改变数据的时候，界面更新，同时，数据变更不再通知给Model
 				//TODO:当前这种处理方式，只支持单键数据绑定，如果要支持类似于 'data-bind:person.dept.name'需要再写代码做处理
 				//方案有两种，在返回的数据中，将json结构数据扁平化；另外一种
-				var dom = this.elem.find(getDomId(this, id));
+				var dom = this.elem.find("#" + getDomId(this, id));
 				this.publishToModel = publishToModel;
 				if (single === true) {
 					dom.find("[data-bind=" + attr + "]").val(val);
@@ -157,6 +159,9 @@ define(['jquery', 'bootstrap','../lib/PubSub', '../lib/Event', '../lib/Type', '.
 						dom.find("[data-bind=" + i + "]").val(attr[i]);
 					}
 				}
+			},
+			onRecordAdd: function(record) {
+
 			}
 		});
 		return fun;

@@ -23,7 +23,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 	}
 
 	function initPubSubs(instance) {
-		pubsub.on(instance.id + CONST.VRR, function(id, attr, val, publishToModel) {
+
+		pubsub.on(instance.id + CONST.VRC, function(id, attr, val, publishToModel) {
+			var publishToView = false;
 			publishToModel && instance.Model.set(id, attr, val, publishToView);
 		});
 
@@ -41,6 +43,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			var publishToModel = false;
 			instance.View.parent.onRecordChange(id, attr, val, publishToModel, type);
 		});
+		pubsub.on(instance.id + CONST.MRA,function(record){
+			instance.View.parent.onRecordAdd(record);
+		});
 		// // pubSub.on(instance.id + "Model:RecordAdd", function(record) {
 		// //	instance.View.onRecordAdd(record, false);
 		// // });
@@ -49,17 +54,20 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 		// });
 	}
 
-	var pub = pubSub.getInstance(),
+	var pubsub = pubSub.getInstance(),
 		Controller = evt.extend({
 			actived: false,
 			init: function(options) {
 				options ? "" : options = {};
+				this.options = options || {};
 				this._super(options);
 				if (!options.id && !this.id) {
 					throw new Error("need an id for the controller");
 				}
-				this.pubsub = pubSub.getInstance();
-				this.options = options || {};
+				this.id = this.id ? this.id :this.options.id;
+				this.View = this.View ? this.View : this.options.View;
+				this.Model = this.Model ? this.Model : this.options.Model;
+				this.pubsub = pubSub.getInstance();				
 				/*
 				此处应该使用脚本内的资源，例如	i18n资源或者其他一些默认的文字资源、数据资源等，而不应该使用服务端数据
 				在此处使用服务端数据，会阻塞视图的渲染。最佳方案应该给用户显示一个默认界面，提示正在加载数据，要好过
@@ -72,13 +80,12 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.inited = true;
 				}
 				//if (this.options.View && this.options.Model) {
-				this.View = this.View ? this.View : this.options.View;
-				this.Model = this.Model ? this.Model : this.options.Model;
+				
 
-				if (type.isObject(this.options.bindData)) {
-					this.Model.bindData = this.options.bindData;
-					initPubSubs(Model, View);
-				}
+				//if (type.isObject(this.options.bindData)) {
+					//this.Model.bindData = this.options.bindData;
+					initPubSubs(this);
+				//}
 				//}
 			},
 			getEvtName: function(name) {
@@ -105,7 +112,8 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				}
 			},
 			initEvent: function() {
-				var evts = this.options.events,
+				var me = this,
+					evts = this.options.events,
 					keys = [],
 					evtName = "",
 					selector = "",
@@ -115,7 +123,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					selector = keys[0],
 					evtName = keys[1];
 					handler = this[evts[i]];
-					this.View.elem.delegate(selector, evtName, this.proxy(handler));
+					this.View.elem.delegate(selector, evtName,function(e){
+						handler.call(me,e);
+					});
 				}
 			},
 			getDefaultData: function() {
@@ -184,10 +194,13 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			},
 			onSave: function(e) {
 				var me = this,
-					record = this.getRecordByEvt();
+					record = this.getRecordByEvt(e);
 				this.beforeSave(record, function(recd) {
 					recd.save(me.proxy(me.afterSave, me, recd));
 				})
+			},
+			getRecordByEvt:function(e) {
+				throw new Error("need to overwrite this function");
 			},
 			afterSave: function(record, res) {
 				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {

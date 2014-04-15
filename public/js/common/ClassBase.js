@@ -62,7 +62,7 @@ define(function() {
 		//设置绑定函数
 		Class.prototype.proxy = Class.proxy = function(fn, scope) {
 			if (typeof fn !== "function") {
-				throw new Error("proxy method need a ");
+				throw new Error("proxy method need a function param");
 			}
 			var me = this,
 				args = Array.prototype.slice.call(arguments, 2);

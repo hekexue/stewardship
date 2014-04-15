@@ -6,7 +6,7 @@ require.config({
 });
 define(['./common/App', './product/product-control'], function(App, Product) {
 
-	var product = new Product();
+	var product = Product.getInstance();
 	var app = new App({
 		routes: {
 			"product/": product.proxy(product.active, product),

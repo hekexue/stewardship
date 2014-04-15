@@ -58,7 +58,7 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 				ctrl,
 				action,				
 				params;
-			debugger;
+			
 			this.convertRoutes(routes);
 			history.history.init(function() {
 				var reg,routes;

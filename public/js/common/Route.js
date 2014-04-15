@@ -31,8 +31,7 @@ define(function() {
 	}
 
 	return {
-		routeToRegExp: function(route) {
-			debugger;
+		routeToRegExp: function(route) {			
 			route = route.replace(escapeRegExp, '\\$&')
 				.replace(optionalParam, '(?:$1)?')
 				.replace(namedParam, function(match, optional) {

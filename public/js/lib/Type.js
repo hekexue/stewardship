@@ -34,6 +34,9 @@ define(function() {
 		},
 		isError: function(obj) {
 			return toString.call(obj) === "[object Error]";
+		},
+		isBoolean:function  (obj) {
+			return toString.call(obj) ==="[object Boolean]";
 		}
 	}
 })
