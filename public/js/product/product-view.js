@@ -5,18 +5,24 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			parentEl: "#mainView",
 			template: tmpl.defaultView()
 		},
-		getRecordIdByEvt:function(e) {
+		getRecordIdByEvt: function(e) {
 			var id = $(e.target).closest("form").attr("data-id");
-			if(id === undefined){
+			if (id === undefined) {
 				id = $("#tabProduct").find("form").attr("data-id");
 			}
+			return id;
+		},
+		getListItemId: function(e) {
+			var id = $(e.target).closest("tr").attr("id");
 			return id;
 		},
 		showAdd: function(record) {
 			var win = "";
 			if (!this.addWinInited) {
 				this.addWinInited = true;
-				this.renderEl(tmpl.add(), {"data":record}, "#tabProduct", "append");
+				this.renderEl(tmpl.add(), {
+					"data": record
+				}, "#tabProduct", "append");
 			}
 			$("#addProduct").modal();
 		},

@@ -6,6 +6,9 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 					record = this.Model.getClientRecord(id);
 				return record;
 			},
+			getRecordIdByEvt: function(e) {
+				return this.View.getListItemId(e);
+			},
 			afterShow: function() {
 				var me = this;
 				this.Model.list({}, function(res) {
@@ -32,7 +35,9 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 			View: UI.getInstance(),
 			Model: Model,
 			events: {
-				"#btnSaveRecord click": "onSave"
+				"#btnSaveRecord click": "onSave",
+				".hook-del click": "onRemove",
+				".hook-edit click": "onEdit"
 			}
 		},
 		instance = null;

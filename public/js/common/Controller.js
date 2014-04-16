@@ -53,7 +53,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 		//	instance.View.onRecordRmv(record, false);
 		// });
 	}
-
+	//TODO:需要修改所有的before　和　after事件，将其空出来以便真正的业务控件复写，同时对外发布消息，提供服务端返回的数据
 	var pubsub = pubSub.getInstance(),
 		Controller = evt.extend({
 			actived: false,
@@ -199,6 +199,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					recd.save(me.proxy(me.afterSave, me, recd));
 				})
 			},
+			getRecordIdByEvt: function(e) {
+				throw new Error("need to overwrite this function");
+			},
 			getRecordByEvt: function(e) {
 				throw new Error("need to overwrite this function");
 			},
@@ -229,9 +232,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			},
 			beforeRemove: function(rid, next) {
 				var local = true,
-					record = this.Model.getRecord(rid, local);
+					record = this.Model.getClientRecord(rid);
 				//confirm remove or not 
-				this.View.confirm("确定要移除" + record.id + "记录吗 ? ", function(e) {
+				this.View.confirm("确定要移除" + record.name + "记录吗 ? ", function(e) {
 					next(e, record);
 				});
 			},
