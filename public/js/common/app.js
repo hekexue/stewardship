@@ -13,6 +13,7 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 				routes = options.routes || {},
 				defaultModules = options.defaultModules,
 				lazyModules = options.lazyModules;
+			this.routes = routes;
 			this.defaultModules = defaultModules;
 			this.lazyModules = lazyModules;
 			// if (!type.isObject(controllers)) {
@@ -35,18 +36,16 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 					me.loadLazyModules(lazyModules);
 				})
 			}
-			if (type.isObject(routes)) {
-				this.initRoutes(routes);
-			}
 		},
 		convertRoutes: function(routes) {
+			var tmpr = "";
 			if (!type.isObject(this.routes)) {
 				this.routes = {};
 			}
 			for (var r in routes) {
-				r = Route.routeToRegExp(r);
+				tmpr = Route.routeToRegExp(r);
 				//转换路由为正则表达式
-				this.routes[r] = routes[r];
+				this.routes[r].regexp = tmpr;				
 			}
 		},
 		initRoutes: function(routes) {
@@ -57,9 +56,13 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 				context,
 				extraParam,
 				ctrl,
-				action,
+				action,				
 				params;
+			
+			this.convertRoutes(routes);
 			history.history.init(function() {
+				var reg,routes;
+				routes = me.routes;
 				hash = getHash();
 				if (hash) {
 					ctrl = me.controllers[hash.substring(0, hash.indexOf("/"))];
@@ -69,8 +72,9 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 						}
 					}
 					for (var rt in routes) {
-						if (rt.test(hash)) {
-							params = Route.extractParameters(rt, hash);
+						reg = routes[rt].regexp;
+						if (reg.test(hash)) {
+							params = Route.extractParameters(reg, hash);
 							action = routes[rt];
 							if (type.isString(action)) {
 								action = ctrl[action];
@@ -109,11 +113,12 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 				this.controllers[name] = module;
 			}
 		},
-		route: function(route, handler) {
+		route: function(routes, handler) {
 			if (type.isObject(routes)) {
 				for (var r in routes) {
 					if (!this.routes[r]) {
 						this.routes[r] = routes[r];
+						this.routes[r].regexp =  Route.routeToRegExp(r);
 					}
 				}
 			}
@@ -128,7 +133,10 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 					c.active();
 				}
 			}
+			if (type.isObject(this.routes)) {
+				this.initRoutes(this.routes);
+			}
 		}
-	})
+	});
 	return App;
 })

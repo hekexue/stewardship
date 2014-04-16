@@ -17,10 +17,7 @@ define(["jquery", "../lib/Type", "./ErrorManager", "./CONST", "./JSON"], functio
 				action: options.action || "",
 				data: options.data || {}
 			});
-		}
-
-		delete options.controller;
-		delete options.action;
+		}		
 		delete options.data;
 		delete options.success;
 		delete options.fail;

@@ -43,7 +43,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			var publishToModel = false;
 			instance.View.parent.onRecordChange(id, attr, val, publishToModel, type);
 		});
-		pubsub.on(instance.id + CONST.MRA,function(record){
+		pubsub.on(instance.id + CONST.MRA, function(record) {
 			instance.View.parent.onRecordAdd(record);
 		});
 		// // pubSub.on(instance.id + "Model:RecordAdd", function(record) {
@@ -64,10 +64,10 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				if (!options.id && !this.id) {
 					throw new Error("need an id for the controller");
 				}
-				this.id = this.id ? this.id :this.options.id;
+				this.id = this.id ? this.id : this.options.id;
 				this.View = this.View ? this.View : this.options.View;
 				this.Model = this.Model ? this.Model : this.options.Model;
-				this.pubsub = pubSub.getInstance();				
+				this.pubsub = pubSub.getInstance();
 				/*
 				此处应该使用脚本内的资源，例如	i18n资源或者其他一些默认的文字资源、数据资源等，而不应该使用服务端数据
 				在此处使用服务端数据，会阻塞视图的渲染。最佳方案应该给用户显示一个默认界面，提示正在加载数据，要好过
@@ -80,11 +80,11 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.inited = true;
 				}
 				//if (this.options.View && this.options.Model) {
-				
+
 
 				//if (type.isObject(this.options.bindData)) {
-					//this.Model.bindData = this.options.bindData;
-					initPubSubs(this);
+				//this.Model.bindData = this.options.bindData;
+				initPubSubs(this);
 				//}
 				//}
 			},
@@ -123,8 +123,8 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					selector = keys[0],
 					evtName = keys[1];
 					handler = this[evts[i]];
-					this.View.elem.delegate(selector, evtName,function(e){
-						handler.call(me,e);
+					this.View.elem.delegate(selector, evtName, function(e) {
+						handler.call(me, e);
 					});
 				}
 			},
@@ -187,7 +187,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			beforeSave: function(record, next) {
 				var msg = record.validCheck();
 				if (msg === true) {
-					next(record); 
+					next(record);
 				} else {
 					this.View.error(msg);
 				}
@@ -199,16 +199,11 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					recd.save(me.proxy(me.afterSave, me, recd));
 				})
 			},
-			getRecordByEvt:function(e) {
+			getRecordByEvt: function(e) {
 				throw new Error("need to overwrite this function");
 			},
 			afterSave: function(record, res) {
-				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
-					this.View.msg("添加成功");
-					this.View.afterSaveRecord(record);
-				} else {
-					this.View.error(res[CONST.RESSTATUS]);
-				}
+				throw new Error("need to overwrite this  the 'afterSave' method");
 			},
 			beforeUpdate: function(record, next) {
 				var msg = record.validCheck();
@@ -297,7 +292,13 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			},
 			afterHide: function() {
 
+			},
+			setRouter: function(route) {
+				if (type.isString(route)) {
+					window.location.hash = route;
+				}
 			}
 		});
+	Controller.CONST = CONST;
 	return Controller;
 })

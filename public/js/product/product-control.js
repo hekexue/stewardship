@@ -1,21 +1,32 @@
 define(["./product-view", "./product-model", "../common/Controller", "../lib/PubSub"], function(UI, Model, Controller, pubsub) {
-	var Product = Controller.extend({
-		getRecordByEvt:function(e){
-			var id = this.View.getRecordIdByEvt(e),
-			record = this.Model.getClientRecord(id);
-			return record;
-		},
-		afterShow: function() {
-			var me = this;
-			this.Model.list({}, function(res) {
-				if (res._r_ == "ok") {
-					me.View.renderList(res);
+	var CONST = Controller.CONST,
+		Product = Controller.extend({
+			getRecordByEvt: function(e) {
+				var id = this.View.getRecordIdByEvt(e),
+					record = this.Model.getClientRecord(id);
+				return record;
+			},
+			afterShow: function() {
+				var me = this;
+				this.Model.list({}, function(res) {
+					if (res._r_ == "ok") {
+						me.View.renderList(res);
+					} else {
+						me.View.error(res._r_);
+					}
+				});
+			},
+			afterSave: function(record, res) {
+				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
+					this.View.msg("添加成功");
+					this.View.afterSaveRecord(record);
+					this.setRouter("");
+					this.afterShow();
 				} else {
-					me.View.error(res._r_);
+					this.View.error(res[CONST.RESSTATUS]);
 				}
-			});
-		}
-	}),
+			}
+		}),
 		options = {
 			id: "product",
 			View: UI.getInstance(),

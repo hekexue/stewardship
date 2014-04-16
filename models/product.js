@@ -34,15 +34,18 @@ module.exports = {
 		var ckres = this.validCheck(data);
 		if (ckres === true) {
 			console.log(data);
+			if (data.record._id === "0") {
+				data.record._id = undefined;
+			}
 			if (type.isFunction(callBack)) {
 				db.insert("product", data.record, null, function(err, doc) {
 					if (err) {
 						logger.log(err);
-						callback(err, "");
+						callBack(err, "");
 						return;
 					}
-					doc.id = doc._id;
-					callBack("ok", doc);
+					doc[0].id = doc[0]._id.toString();
+					callBack("ok", doc[0]);
 				})
 			}
 		} else {

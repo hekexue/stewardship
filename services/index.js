@@ -13,7 +13,6 @@ module.exports = {
 			inited = true;
 			//get route files and read the names
 			fs.readdir(CONST.controllerPath, function(err, files) {
-				debugger;
 				if (err) {
 					console.log(err);
 				}
@@ -21,7 +20,7 @@ module.exports = {
 				if (files) {
 					for (var i = 0, len = files.length; i < len; i++) {
 						f = files[i];
-						controllers[f.replace(".js","")] = require(CONST.controllerPath + "/" + f);
+						controllers[f.replace(".js", "")] = require(CONST.controllerPath + "/" + f);
 					}
 				}
 

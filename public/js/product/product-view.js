@@ -30,10 +30,10 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			$("#stewradshipWindow").modal();
 		},
 		afterSaveRecord: function() {
-			$("#stewradshipWindow").hide();
+			$("#addProduct").modal("hide");
 		},
 		afterUpdateRecord: function(record) {
-			$("#stewradshipWindow").hide();
+			$("#stewradshipWindow").modal("hide");
 		},
 		renderList: function(data) {
 			this.renderEl(tmpl.listView(), data, "#productList", "html");

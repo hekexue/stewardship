@@ -7,7 +7,7 @@ define(function() {
 				'<div class="panel-body">',
 				'	<div class="search row">',
 				'		<div class="col-lg-6">',
-				'			<a href="#product/add" class="btn btn-success btn-lg" data-toggle="modal" data-target="#addProduct">',
+				'			<a href="#product/add" class="btn btn-success btn-lg">',
 				'				<span class="glyphicon glyphicon-plus "></span>',
 				'				新建产品',
 				'			</a>',

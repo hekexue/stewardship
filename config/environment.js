@@ -1,7 +1,7 @@
 
 var username="program",
 	password="programuser",
-	mongoHost="localhost",
+	mongoHost="192.168.136.75",
 	mongoPort="",
 	mongoBase="productstewardship",
 	mongoOptions="";
