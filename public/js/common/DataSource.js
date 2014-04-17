@@ -9,23 +9,23 @@ define(["jquery", "../lib/Type", "./ErrorManager", "./CONST", "./JSON"], functio
 			//如果后端服务API也采用MVC模式，则直接根据前端参数拼接后端MVC的url
 			url = CONST.SERVICEURLPRIFX || "" + "/" + options.controller + "/" + options.action;
 			data = JSON.stringify({
-				data: options.data
+				data: options.data || null
 			});
 		} else {
 			data = JSON.stringify({
 				controller: options.controller || "",
 				action: options.action || "",
-				data: options.data || {}
+				data: options.data || null
 			});
-		}		
+		}
 		delete options.data;
 		delete options.success;
 		delete options.fail;
 
 		return jQuery.ajax($.extend({
 			type: method,
-			url: url,			
-			data: "data="+data,
+			url: url,
+			data: "data=" + data,
 			success: cb,
 			fail: err,
 			dataType: dataType

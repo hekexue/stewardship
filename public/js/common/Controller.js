@@ -123,9 +123,11 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					selector = keys[0],
 					evtName = keys[1];
 					handler = this[evts[i]];
-					this.View.elem.delegate(selector, evtName, function(e) {
-						handler.call(me, e);
-					});
+					this.View.elem.delegate(selector, evtName, function(handler) {
+						return function(e) {
+							handler.call(me, e);
+						}
+					}(handler));
 				}
 			},
 			getDefaultData: function() {
@@ -233,10 +235,11 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			beforeRemove: function(rid, next) {
 				var local = true,
 					record = this.Model.getClientRecord(rid);
-				//confirm remove or not 
-				this.View.confirm("确定要移除" + record.name + "记录吗 ? ", function(e) {
-					next(e, record);
-				});
+				if ( !! record) {
+					this.View.confirm("删除", "确定要移除" + record.attributes.name + "记录吗 ? ", function(e) {
+						next(e, record);
+					});
+				}
 			},
 			onRemove: function(e) {
 				var rid = this.getRecordIdByEvt(e),
@@ -253,9 +256,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					// pubSub.publish(this.getEvtName("msg"), "移除成功");				
 					// pubSub.publish(this.id + "Model:RecordRemove", record);
 					this.View.msg("移除成功");
-					this.View.onRecordRemove(record);
+					this.View.afterRemoveRecord(record);
 				} else {
-
+					this.View.msg("删除失败", "error");
 				}
 			},
 			beforeList: function(next) {

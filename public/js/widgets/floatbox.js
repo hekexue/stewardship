@@ -1,6 +1,6 @@
 define(['jquery', '../common/Widget'], function($, Widget) {
 	var boxHtml = [
-		'<div class="modal fade">',
+		'<div class="modal" data-backdrop="static">',
 		' <div class="modal-dialog">',
 		'   <div class="modal-content">',
 		'     <div class="modal-header">',
@@ -13,47 +13,49 @@ define(['jquery', '../common/Widget'], function($, Widget) {
 		'     <div class="modal-footer">',
 		'		<%=footer%>',
 		'     </div>',
-		'   </div><!-- /.modal-content -->',
-		' </div><!-- /.modal-dialog -->',
-		'</div><!-- /.modal -->'
+		'   </div>',
+		' </div>',
+		'</div>'
 	].join(''),
 		FloatBox = Widget.extend({
 			init: function(options) {
-				this.template = boxHtml;
-				this._super(options);
+				this.template = options.template = boxHtml;
 				this.renderData = $.extend({
 					title: "",
 					content: "",
 					footer: '<button type="button" class="btn btn-primary hook-ok">确定</button><button type="button" class="btn btn-default hook-cancel" data-dismiss="modal">取消</button>'
 				}, options);
+				this._super(options);
 			},
 			beforeRender: function() {
 				return this.renderData;
 			},
 			bindEvent: function() {
 				var me = this;
-				this.elem.delegate(".hook-ok", 'click', function() {
-					if (typeof me.onOk === 'function') {
-						me.onOk();
-					} else {
-						me.hide();
-					}
-				});
-				this.elem.delegate('.hook-cancel', 'click', function() {
-					if (typeof me.onCancel === 'function') {
-						me.onCancel();
-					} else {
-						me.hide();
-					}
-				})
+				this.elem.delegate(".hook-ok", 'click', me.proxy(me.onOK, me));
+				this.elem.delegate('.hook-cancel', 'click', me.proxy(me.onCancel, me));
+			},
+			onOK: function(e) {
+				this.hide();
+			},
+			onCancel: function(e) {
+				this.hide();
 			},
 			show: function() {
-				this._super();
+				var parentEl = null;
+				if (!this.rendered) {
+					if (!this.options.parentEl) {
+						parentEl = $("body");
+					} else {
+						parentEl = $(this.options.parentEl);
+					}
+					parentEl.append(this.elem);
+					this.rendered = true;
+				}
 				this.elem.modal();
 			},
-			hide: function(destory) {
+			hide: function(destroy) {
 				this.elem.modal("hide");
-				this._super(destory);
 			}
 		});
 	return FloatBox;

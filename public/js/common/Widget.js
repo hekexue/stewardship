@@ -1,8 +1,9 @@
-define(['jquery', './ClassBase', './Template.js', '../lib/Type'], function($, Class, TP, type) {
+define(['jquery', './ClassBase', './Template', '../lib/Type'], function($, Class, TP, type) {
 	var Widget = Class.extend({
 		init: function(options) {
-			this._super();
+			//this._super();
 			this.options = options || {};
+			this.template = this.template ? this.template : options.template;
 			this.rendered = false;
 			this.elem = this.options.elem || null;
 			if (this.elem === null && !this.template) {
@@ -37,6 +38,7 @@ define(['jquery', './ClassBase', './Template.js', '../lib/Type'], function($, Cl
 					parentEl = $(this.options.parentEl);
 				}
 				parentEl.append(this.elem);
+				this.parentEl = parentEl;
 				this.rendered = true;
 			}
 			this.elem.show();
@@ -52,4 +54,5 @@ define(['jquery', './ClassBase', './Template.js', '../lib/Type'], function($, Cl
 			}
 		}
 	})
+	return Widget;
 })

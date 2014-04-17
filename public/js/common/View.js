@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template','./CONST'], function($, boot, pubSub, evt, type, Tmpl,CONST) {
+define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template', './CONST', '../widgets/messageBox', '../widgets/confirm', '../widgets/info'], function($, boot, pubSub, evt, type, Tmpl, CONST, MessageBox, Confirm, Info) {
 	/**
 	 * 视图实例，在初始化的时候，可以传递一个模板，或者传递一个elem 或者传递一个 css选择器
 	 * 如果传递了elem，则优先使用elem作为对象，
@@ -21,6 +21,9 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 		return true;
 	}
 	var pubsub = pubSub.getInstance(),
+		messageBox = MessageBox.getInstance(),
+		confirm = Confirm.getInstance(),
+		info = Info.getInstance(),
 		View = evt.extend({
 			init: function(options) {
 				this.options = this.options ? this.options : options || {};
@@ -94,13 +97,17 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				this.initEvent();
 			},
 			showAdd: function() {
-				throw new Error("需要对该方法做继承");
+				throw new Error("需要继承showAdd方法");
 			},
 			afterSaveRecord: function() {
-				throw new Error("需要对该方法做继承");
+				throw new Error("需要继承afterSaveRecord方法");
 			},
 			afterUpdateRecord: function() {
-				throw new Error("需要对该方法做继承");
+				throw new Error("需要继承afterUpdateRecord方法");
+			},
+			afterRemoveRecord: function(record) {
+				$("#" + record.attributes._id).remove();
+				//throw new Error("需要继承afterRemoveRecord方法")
 			},
 			show: function() {
 				var parentEl = null;
@@ -126,13 +133,18 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				}
 			},
 			msg: function(msg) {
-				alert(msg);
+				info.show(msg);
 			},
 			error: function(msg) {
-				alert(msg)
+				this.info.show(msg, "error");
+				messageBox.show(msg);
 			},
-			confirm: function(msg, cb) {
-
+			confirm: function(title, msg, cb) {
+				confirm.show({
+					title: title,
+					msg: msg,
+					callback: cb
+				});
 			}
 		});
 	//定义类方法
