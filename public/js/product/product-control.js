@@ -18,6 +18,13 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 						me.View.error(res._r_);
 					}
 				});
+				this.initWidgetEvent();
+			},
+			initWidgetEvent: function() {
+				var me = this;
+				$('body').delegate(".modal", 'hidden.bs.modal', function(e) {
+					me.setRouter("");
+				})
 			},
 			afterSave: function(record, res) {
 				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {

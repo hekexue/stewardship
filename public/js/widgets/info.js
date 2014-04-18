@@ -2,8 +2,9 @@ define(['jquery', '../common/Widget'], function($, Widget) {
 	var clsArray = ["alert-success", "alert-info", "alert-warning", "alert-danger"],
 		Info = Widget.extend({
 			template: '<div class="alert alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><div id="infoMsg" class="text-center"></div></div>',
+			hideTimer: 0,
 			show: function(msg, type) {
-
+				clearTimeout(this.hideTimer);
 				this._super();
 				var cls = "",
 					me = this,
@@ -32,7 +33,7 @@ define(['jquery', '../common/Widget'], function($, Widget) {
 					"top": 0,
 					"left": 0
 				}).find("#infoMsg").html(msg);
-				setTimeout(function() {
+				this.hideTimer = setTimeout(function() {
 					me.hide();
 				}, 4000)
 			}
