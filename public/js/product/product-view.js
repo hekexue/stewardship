@@ -13,8 +13,12 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			return id;
 		},
 		getListItemId: function(e) {
-			var id = $(e.target).closest("tr").attr("id");
-			return id;
+			if (e) {
+				var id = $(e.target).closest("tr").attr("id");
+				return id;
+			} else {
+				return "";
+			}
 		},
 		showAdd: function(record) {
 			var win = "";
@@ -22,28 +26,30 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 				this.addWinInited = true;
 				this.renderEl(tmpl.add(), {
 					"data": record
-				}, "#tabProduct", "append");
+				}, "#productRrecordWin", "append");
 			}
-			$("#addProduct").modal();
+			$("#productRrecordWin").modal();
 		},
 		showEdit: function(record) {
 			var win = "";
 			if (!this.addWinInited) {
 				this.addWinInited = true;
-				this.renderEl(tmpl.record(), record, "#recordForm", "replace");
+				this.renderEl(tmpl.add(), {
+					"data": record
+				}, "#productRrecordWin", "append");
 			}
-			//$('#myModal').modal(options)
-			$("#stewradshipWindow").modal();
+			$("#productRrecordWin").modal();
 		},
 		afterSaveRecord: function() {
-			$("#addProduct").modal("hide");
+			$("#productRrecordWin").modal("hide");
 		},
 		afterUpdateRecord: function(record) {
 			$("#stewradshipWindow").modal("hide");
 		},
-		// afterRemoveRecord: function(record) {
-		//	$("#" + record.attributes._id).remove();
-		// },
+		afterRemoveRecord: function(record) {
+			$("#" + record.attributes._id).remove();
+
+		},
 		renderList: function(data) {
 			this.renderEl(tmpl.listView(), data, "#productList", "html");
 		}

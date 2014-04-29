@@ -1,4 +1,4 @@
-define(["./product-view", "./product-model", "../common/Controller", "../lib/PubSub"], function(UI, Model, Controller, pubsub) {
+define(["./product-view", "./product-model", "../common/Controller", "../lib/PubSub", "../stewardship/stewardshipTable"], function(UI, Model, Controller, pubsub, steTable) {
 	var CONST = Controller.CONST,
 		Product = Controller.extend({
 			getRecordByEvt: function(e) {
@@ -8,6 +8,9 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 			},
 			getRecordIdByEvt: function(e) {
 				return this.View.getListItemId(e);
+			},
+			getRecordForm: function() {
+				return "recordForm";
 			},
 			afterShow: function() {
 				var me = this;
@@ -35,6 +38,10 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 				} else {
 					this.View.error(res[CONST.RESSTATUS]);
 				}
+			},
+			onStewardship: function() {
+				var table = steTable.getInstance();
+				table.show();
 			}
 		}),
 		options = {
@@ -43,8 +50,7 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 			Model: Model,
 			events: {
 				"#btnSaveRecord click": "onSave",
-				".hook-del click": "onRemove",
-				".hook-edit click": "onEdit"
+				".hook-stewardship click": "onStewardship"
 			}
 		},
 		instance = null;

@@ -67,25 +67,44 @@ module.exports = {
 	},
 	remove: function(data, callBack) {
 		var ids = [];
-		if (type.isString(data)) {
-			ids = [new ObjectID(data)];
-		} else if (type.isObject(data)) {
-			ids = [new ObjectID(data.id)];
-		} else if (type.isArray(data)) {
-			for (var i = 0, len = data.length; i < len; i++) {
-				ids.push(new ObjectID(data[i].id));
+		try {
+			if (type.isString(data)) {
+				ids = [new ObjectID(data)];
+			} else if (type.isObject(data)) {
+				ids = [new ObjectID(data.id)];
+			} else if (type.isArray(data)) {
+				for (var i = 0, len = data.length; i < len; i++) {
+					ids.push(new ObjectID(data[i].id));
+				}
 			}
+			if (type.isFunction(callBack)) {
+				//update: function(collectionName, criteria, objNew, options, callback) {
+				db.update("product", {
+					_id: {
+						$in: ids
+					}
+				}, {
+					$set: {
+						deleted: true
+					}
+				}, function(err, doc) {
+					if (err) {
+						logger.log(err);
+						callBack(err, doc);
+						return;
+					}
+					callBack("ok", doc);
+				})
+			}
+		} catch (e) {
+			callBack(e, "");
 		}
-		if (type.isFunction(callBack)) {
-			//update: function(collectionName, criteria, objNew, options, callback) {
-			db.update("product", {
-				_id: {
-					$in: ids
-				}
-			}, {
-				$set: {
-					deleted: true
-				}
+	},
+	read: function(data, callBack) {
+		var id = data && data.id;
+		if (id) {
+			db.findOne("product", {
+				_id: new ObjectID(id)
 			}, function(err, doc) {
 				if (err) {
 					logger.log(err);
@@ -93,7 +112,9 @@ module.exports = {
 					return;
 				}
 				callBack("ok", doc);
-			})
+			});
+		} else {
+			callBack("badparam", "")
 		}
 	}
 }

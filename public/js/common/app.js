@@ -1,7 +1,7 @@
 /*
 负责初始化路由配置，模块激活、禁用机制，同时负责大型单页面模块延迟加载
  */
-define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib/PubSub", "../lib/PackageLoader"], function(Class, Route, history, type, PubSub, PkgLoader) {
+define(["jquery", "./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib/PubSub", "../lib/PackageLoader"], function($, Class, Route, history, type, PubSub, PkgLoader) {
 	function getHash(window) {
 		var match = (window || this).location.href.match(/#(.*)$/);
 		return match ? match[1] : '';
@@ -36,6 +36,31 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 					me.loadLazyModules(lazyModules);
 				})
 			}
+
+			//监听所有的路由
+			$(document).delegate("a[href^='#']", "click", function(e) {
+				//e.preventDefault();
+				me.setRouteSource(e);
+			});
+			$(document).delegate("*[route^='#']", "click", function(e) {
+				var route = $(e.target).attr("route");
+				me.setRouteSource(e);
+				me.setRoutePath(route);
+			})
+		},
+		setRoutePath: function(route) {
+			if (type.isString(route) && route.length > 0) {
+				if (route.indexOf("#") < 0) {
+					route = "#" + route;
+				}
+				window.location.hash = route;
+			}
+		},
+		setRouteSource: function(e) {
+			this.routeSourece = e;
+		},
+		getRouteSource: function() {
+			return this.routeSourece || null;
 		},
 		convertRoutes: function(routes) {
 			var tmpr = "";
@@ -45,7 +70,7 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 			for (var r in routes) {
 				tmpr = Route.routeToRegExp(r);
 				//转换路由为正则表达式
-				this.routes[r].regexp = tmpr;				
+				this.routes[r].regexp = tmpr;
 			}
 		},
 		initRoutes: function(routes) {
@@ -56,12 +81,12 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 				context,
 				extraParam,
 				ctrl,
-				action,				
+				action,
 				params;
-			
+
 			this.convertRoutes(routes);
 			history.history.init(function() {
-				var reg,routes;
+				var reg, routes;
 				routes = me.routes;
 				hash = getHash();
 				if (hash) {
@@ -75,6 +100,7 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 						reg = routes[rt].regexp;
 						if (reg.test(hash)) {
 							params = Route.extractParameters(reg, hash);
+							params.unshift(me.getRouteSource());
 							action = routes[rt];
 							if (type.isString(action)) {
 								action = ctrl[action];
@@ -118,7 +144,7 @@ define(["./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type", "../lib
 				for (var r in routes) {
 					if (!this.routes[r]) {
 						this.routes[r] = routes[r];
-						this.routes[r].regexp =  Route.routeToRegExp(r);
+						this.routes[r].regexp = Route.routeToRegExp(r);
 					}
 				}
 			}

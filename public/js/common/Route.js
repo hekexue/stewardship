@@ -5,9 +5,10 @@ define(function() {
 	var namedParam = /(\(\?)?:\w+/g;
 	var splatParam = /\*\w+/g;
 	var escapeRegExp = /[\-{}\[\]+?.,\\\^$|#\s]/g;
+	var breaker = {};
 
 	function each(obj, iterator, context) {
-		if (obj == null) return obj;
+		if (obj === null) return obj;
 		if (obj.length === +obj.length) {
 			for (var i = 0, length = obj.length; i < length; i++) {
 				if (iterator.call(context, obj[i], i, obj) === breaker) return;
@@ -31,7 +32,7 @@ define(function() {
 	}
 
 	return {
-		routeToRegExp: function(route) {			
+		routeToRegExp: function(route) {
 			route = route.replace(escapeRegExp, '\\$&')
 				.replace(optionalParam, '(?:$1)?')
 				.replace(namedParam, function(match, optional) {

@@ -27,5 +27,14 @@ module.exports = {
 			});
 			res.end(JSON.stringify(result), "utf-8");
 		})
+	},
+	read: function(req, res, param) {
+		model.read(param, function(status, data) {
+			var result = resHelper.resData(status, data);
+			res.writeHead(200, {
+				'content-type': 'text/plain'
+			});
+			res.end(JSON.stringify(result), "utf-8");
+		})
 	}
 }

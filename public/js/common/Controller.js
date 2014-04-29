@@ -130,8 +130,29 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					}(handler));
 				}
 			},
+			getRecordForm: function() {
+				throw new Error("返回数据视图或者数据表单");
+			},
 			getDefaultData: function() {
 				return {};
+			},
+			/**
+			 * 数据和视图绑定
+			 * @param  {String||JQuery Object} view   要绑定数据的视图
+			 * @param  {Model Instance} record 单条数据记录
+			 * @return {[type]}        [description]
+			 */
+			bind: function(view, record) {
+				//获取视图中的控件
+				type.isString(view) {
+					view = $(view);
+				}
+				//搜索绑定控件及属性标记
+				view.find("[data-bind]").each(function(index, domEle) {
+					//根据不同元素的类型，进行不同形式的赋值：需要考虑到1普通输入框，2checkbox，3radio button ，4select，5普通dom元素
+				})
+				//给表单对应的位置赋值
+
 			},
 			beforeActive: function(next) {
 				if (this.inited === false) {
@@ -172,14 +193,25 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 
 			},
 			beforeEdit: function(rid, next) {
-				this.Model.getRecord(rid, next);
+				if (rid && rid.length > 0) {
+					this.Model.getRecord(rid, next);
+				} else {
+					this.setRouter("");
+				}
 			},
 			onEdit: function(e) {
 				var me = this,
+					rid = "";
+				if (e === null) {
+					rid = arguments[1];
+				} else {
 					rid = this.getRecordIdByEvt(e);
+				}
+
 				this.beforeEdit(rid, function(record) {
 					//bind data to View , the View state should be "edit"
 					me.View.showEdit(record);
+					me.bind(me.getRecordForm(), record);
 					me.afterEdit();
 				});
 			},

@@ -11,8 +11,8 @@ define(['./common/App', './product/product-control'], function(App, Product) {
 		routes: {
 			"product/": product.proxy(product.active, product),
 			"product/add": product.proxy(product.onAdd, product),
-			"product/edit": product.proxy(product.onEdit, product),
-			"product/remove": product.proxy(product.onRemove, product)
+			"product/edit/:id": product.proxy(product.onEdit, product),
+			"product/remove/:id": product.proxy(product.onRemove, product)
 		},
 		defaultModules: [product],
 		lazyModules: [{

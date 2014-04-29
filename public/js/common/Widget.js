@@ -45,7 +45,7 @@ define(['jquery', './ClassBase', './Template', '../lib/Type'], function($, Class
 		},
 		hide: function(destory) {
 			this.elem.hide();
-			if (destroy === true) {
+			if (destory === true) {
 				this.rendered = false;
 				this.elem.unbind();
 				this.elem.undelegate();
