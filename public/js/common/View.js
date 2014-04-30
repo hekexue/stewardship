@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template', './CONST', '../widgets/messageBox', '../widgets/confirm', '../widgets/info'], function($, boot, pubSub, evt, type, Tmpl, CONST, MessageBox, Confirm, Info) {
+define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', './Template', './CONST', '../widgets/messageBox', '../widgets/confirm', '../widgets/info', '../widgets/win'], function($, boot, pubSub, evt, type, Tmpl, CONST, MessageBox, Confirm, Info, Win) {
 	/**
 	 * 视图实例，在初始化的时候，可以传递一个模板，或者传递一个elem 或者传递一个 css选择器
 	 * 如果传递了elem，则优先使用elem作为对象，
@@ -145,6 +145,12 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 					msg: msg,
 					callback: cb
 				});
+			},
+			win: function(options) {
+				if (!this.Window) {
+					this.Window = new Win();
+				}
+				this.Window.show(options);
 			}
 		});
 	//定义类方法

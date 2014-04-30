@@ -144,7 +144,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			 */
 			bind: function(view, record) {
 				//获取视图中的控件
-				type.isString(view) {
+				if (type.isString(view)) {
 					view = $(view);
 				}
 				//搜索绑定控件及属性标记

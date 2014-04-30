@@ -26,7 +26,7 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 				this.addWinInited = true;
 				this.renderEl(tmpl.add(), {
 					"data": record
-				}, "#productRrecordWin", "append");
+				}, "#tabProduct", "append");
 			}
 			$("#productRrecordWin").modal();
 		},
@@ -36,7 +36,7 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 				this.addWinInited = true;
 				this.renderEl(tmpl.add(), {
 					"data": record
-				}, "#productRrecordWin", "append");
+				}, "#tabProduct", "append");
 			}
 			$("#productRrecordWin").modal();
 		},

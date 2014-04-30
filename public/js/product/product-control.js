@@ -10,7 +10,7 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 				return this.View.getListItemId(e);
 			},
 			getRecordForm: function() {
-				return "recordForm";
+				return "#recordForm";
 			},
 			afterShow: function() {
 				var me = this;
