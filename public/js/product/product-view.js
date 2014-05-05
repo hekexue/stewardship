@@ -21,24 +21,24 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			}
 		},
 		showAdd: function(record) {
-			var win = "";
-			if (!this.addWinInited) {
-				this.addWinInited = true;
-				this.renderEl(tmpl.add(), {
-					"data": record
-				}, "#tabProduct", "append");
-			}
-			$("#productRrecordWin").modal();
+			var dom = this.renderEl(tmpl.record(), {
+				"data": record
+			});
+			this.win({
+				title: "新建",
+				msg: dom,
+				footer: '<button id="btnSaveRecord" class="btn btn-success">保存</button>',
+			});
 		},
 		showEdit: function(record) {
-			var win = "";
-			if (!this.addWinInited) {
-				this.addWinInited = true;
-				this.renderEl(tmpl.add(), {
-					"data": record
-				}, "#tabProduct", "append");
-			}
-			$("#productRrecordWin").modal();
+			var dom = this.renderEl(tmpl.record(), {
+				"data": record
+			});
+			this.win({
+				title: "编辑",
+				msg: dom,
+				footer: '<button id="btnUpdateRecord" class="btn btn-success">保存</button>',
+			});
 		},
 		afterSaveRecord: function() {
 			$("#productRrecordWin").modal("hide");

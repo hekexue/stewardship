@@ -150,11 +150,18 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 					callback: cb
 				});
 			},
-			win: function(options) {
-				if (!this.Window) {
-					this.Window = new Win();
+			win: function(options, newInstance) {
+				if (newInstance === true) {
+					var win = new Win();
+					win.show(options);
+					win = null;
+				} else {
+					if (!this.Window) {
+						this.Window = new Win();
+					}
+					this.Window.show(options);
 				}
-				this.Window.show(options);
+
 			}
 		});
 	//定义类方法

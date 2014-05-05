@@ -19,8 +19,8 @@ define(['jquery', '../common/Widget'], function($, Widget) {
 	].join(''),
 		FloatBox = Widget.extend({
 			init: function(options) {
-				this.template = options.template = boxHtml;
-				this.renderData = $.extend({
+				this.template = this.template ? this.template : boxHtml;
+				this.renderData = this.renderData ? this.renderData : $.extend({
 					title: "",
 					content: "",
 					footer: '<button type="button" class="btn btn-primary hook-ok">确定</button><button type="button" class="btn btn-default hook-cancel" data-dismiss="modal">取消</button>'

@@ -50,6 +50,7 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 			Model: Model,
 			events: {
 				"#btnSaveRecord click": "onSave",
+				"#btnUpdateRecord click": "onUpdate",
 				".hook-stewardship click": "onStewardship"
 			}
 		},
