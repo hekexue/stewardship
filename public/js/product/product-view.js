@@ -48,7 +48,6 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 		},
 		afterRemoveRecord: function(record) {
 			$("#" + record.attributes._id).remove();
-
 		},
 		renderList: function(data) {
 			this.renderEl(tmpl.listView(), data, "#productList", "html");

@@ -10,6 +10,10 @@ define(["../common/Model"], function(Model) {
 				controller: "product",
 				action: "update"
 			},
+			saveChanges: {
+				controller: "product",
+				action: "saveChanges"
+			},
 			remove: {
 				controller: "product",
 				action: "remove"

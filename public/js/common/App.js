@@ -39,28 +39,24 @@ define(["jquery", "./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type
 
 			//监听所有的路由
 			$(document).delegate("a[href^='#']", "click", function(e) {
-				//e.preventDefault();
-				me.setRouteSource(e);
+				e.preventDefault();
+				var source = e,
+					route = $(e.target).closest("a").attr("href");
+				Route.setRoute(route, source);
 			});
 			$(document).delegate("*[route^='#']", "click", function(e) {
 				var route = $(e.target).attr("route");
-				me.setRouteSource(e);
-				me.setRoutePath(route);
-			})
+				Route.setRoute(route, e);
+			});
 		},
-		setRoutePath: function(route) {
-			if (type.isString(route) && route.length > 0) {
-				if (route.indexOf("#") < 0) {
-					route = "#" + route;
-				}
-				window.location.hash = route;
-			}
-		},
-		setRouteSource: function(e) {
-			this.routeSourece = e;
-		},
-		getRouteSource: function() {
-			return this.routeSourece || null;
+		/**
+		 * 获取触发路由变更的对应的dom节点
+		 * @param  {[type]} hash [description]
+		 * @return {[type]}      [description]
+		 */
+		getRouteSource: function(hash) {
+			hash.indexOf("#") < 0 ? hash = "#" + hash : "";
+			return Route.getRouteSource(hash) || null;
 		},
 		convertRoutes: function(routes) {
 			var tmpr = "";
@@ -86,7 +82,7 @@ define(["jquery", "./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type
 
 			this.convertRoutes(routes);
 			history.history.init(function() {
-				var reg, routes;
+				var reg, routes, safe;
 				routes = me.routes;
 				hash = getHash();
 				if (hash) {
@@ -99,8 +95,9 @@ define(["jquery", "./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type
 					for (var rt in routes) {
 						reg = routes[rt].regexp;
 						if (reg.test(hash)) {
+							safe = true;
 							params = Route.extractParameters(reg, hash);
-							params.unshift(me.getRouteSource());
+							params.unshift(me.getRouteSource(hash));
 							action = routes[rt];
 							if (type.isString(action)) {
 								action = ctrl[action];
@@ -115,6 +112,9 @@ define(["jquery", "./ClassBase", "./Route", "../lib/JqueryHistory", "../lib/Type
 								handler.apply(context, params);
 							}
 						}
+					}
+					if (!safe) {
+						Route.resetRoute();
 					}
 				}
 			});

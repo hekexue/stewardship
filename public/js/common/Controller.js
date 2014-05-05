@@ -127,7 +127,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 						return function(e) {
 							handler.call(me, e);
 						}
-					}(handler));
+					}(handler))
 				}
 			},
 			getRecordForm: function() {
@@ -136,22 +136,52 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			getDefaultData: function() {
 				return {};
 			},
+			getFiledValue: function(record, keyfield) {
+				var keys = [],
+					value;
+				if (keyfield.indexOf(".") > 0) {
+					keys = keyfield.split(".");
+				} else {
+					keys.push(keyfield);
+				}
+
+				for (var i = 0, k = ""; k = keys[i]; i++) {
+					value = record[k];
+					if (value === undefined || value === null) {
+						return null;
+					}
+					record = value;
+				}
+				return value;
+			},
 			/**
 			 * 数据和视图绑定
 			 * @param  {String||JQuery Object} view   要绑定数据的视图
 			 * @param  {Model Instance} record 单条数据记录
 			 * @return {[type]}        [description]
 			 */
-			bind: function(view, record) {
+			_bind: function(view, record) {
+				var tmpView = "",
+					me = this;
 				//获取视图中的控件
 				if (type.isString(view)) {
 					view = $(view);
+					tmpView = view.clone();
 				}
 				//搜索绑定控件及属性标记
-				view.find("[data-bind]").each(function(index, domEle) {
+				tmpView.find("[data-bind]").each(function(index, domEle) {
 					//根据不同元素的类型，进行不同形式的赋值：需要考虑到1普通输入框，2checkbox，3radio button ，4select，5普通dom元素
+					var dom = $(domEle),
+						field = dom.attr("data-bind");
+					switch (dom.attr("type").toLowerCase()) {
+						case "text":
+						case "textarea":
+							dom.val(me.getFiledValue(record.attributes, field))
+							break;
+					}
 				})
-				//给表单对应的位置赋值
+				tmpView.find("form").attr("data-id", record.id);
+				view.replaceWith(tmpView);
 
 			},
 			beforeActive: function(next) {
@@ -211,7 +241,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				this.beforeEdit(rid, function(record) {
 					//bind data to View , the View state should be "edit"
 					me.View.showEdit(record);
-					me.bind(me.getRecordForm(), record);
+					me._bind(me.getRecordForm(), record);
 					me.afterEdit();
 				});
 			},
@@ -250,10 +280,10 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.View.error(msg);
 				}
 			},
-			update: function(record) {
+			update: function(record, updateAll) {
 				var me = this;
 				this.beforeUpdate(record, function(record) {
-					record.update(me.proxy(me.afterUpdate, me, reocrd));
+					record.update(me.proxy(me.afterUpdate, me, reocrd), updateAll);
 				});
 			},
 			afterUpdate: function(record, res) {
@@ -335,6 +365,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				if (type.isString(route)) {
 					window.location.hash = route;
 				}
+			},
+			resetRouter: function() {
+				this.pubsub.publish("resetRouter");
 			}
 		});
 	Controller.CONST = CONST;

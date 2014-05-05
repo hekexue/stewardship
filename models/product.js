@@ -2,6 +2,7 @@ var db = require("../lib/simplemongo"),
 	type = require("../lib/type"),
 	ObjectID = require('mongodb').ObjectID,
 	logger = console;
+
 module.exports = {
 	validCheck: function(data) {
 		//TODO:check data 
@@ -115,6 +116,50 @@ module.exports = {
 			});
 		} else {
 			callBack("badparam", "")
+		}
+	},
+	/**
+	 * 更新单条数据记录，覆盖原来的记录
+	 * @param  {object} data     数据记录对象
+	 * @param  {function} callBack 回调函数
+	 * @return {[type]}          [description]
+	 */
+	update: function(data, callBack) {
+		var id = data && data.id;
+		if (id) {
+			db.findAndModify("product", {
+				_id: new ObjectID(id)
+			}, {}, data, function(err, doc) {
+				if (err) {
+					logger.log(err);
+					callBack(err, doc);
+					return;
+				}
+				callBack("ok", doc);
+			})
+		}
+	},
+	/**
+	 * 差异化更新数据记录（只保存变动的字段）
+	 * @param  {object} data     要更新的数据记录
+	 * @param  {function} callBack 回调函数
+	 * @return {[type]}          [description]
+	 */
+	saveChanges: function(data, callBack) {
+		var id = data && data.id,
+			update = null;
+		if (id) {
+			update = db.parseChanges(data);
+			db.findAndModify("product", {
+				_id: new ObjectID(id)
+			}, {}, data, function(err, doc) {
+				if (err) {
+					logger.log(err);
+					callBack(err, doc);
+					return;
+				}
+				callBack("ok", doc);
+			})
 		}
 	}
 }

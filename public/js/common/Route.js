@@ -49,6 +49,39 @@ define(function() {
 			return map(params, function(param) {
 				return param ? decodeURIComponent(param) : null;
 			});
+		},
+		setRoute: function(route, data) {
+			if (!this.routes) {
+				this.routes = [];
+			}
+			var rt = {
+				route: route,
+				data: data
+			};
+			this.routes[route] = rt;
+			this.routes.push(rt);
+			window.location.hash = route;
+		},
+		resetRoute: function() {
+			if (!this.routes) {
+				window.location.hash = "";
+			} else {
+				var route = this.routes.pop();
+				delete this.routes[route.route];
+				window.location.hash = this.routes[this.routes.length - 1].route;
+			}
+		},
+		getRouteSource: function(route) {
+			if (!this.routes) {
+				this.routes = [];
+				return null;
+			}
+			var rt = this.routes[route];
+			if (rt) {
+				return rt.data || null;
+			} else {
+				return null;
+			}
 		}
 	}
 })

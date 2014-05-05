@@ -92,12 +92,16 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 						elContainer.append(el);
 					}
 				}
+				return el;
 			},
 			afterRender: function() {
 				this.initEvent();
 			},
 			showAdd: function() {
 				throw new Error("需要继承showAdd方法");
+			},
+			showEdit: function() {
+				throw new Error("需要继承showEdit方法");
 			},
 			afterSaveRecord: function() {
 				throw new Error("需要继承afterSaveRecord方法");
