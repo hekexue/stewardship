@@ -185,8 +185,8 @@ define(function() {
 		record: function() {
 			return [
 				'<div id="recordForm">',
-				'<form class="form-horizontal" role="form" id="product-form-0" data-id="0" >',
-				'<div class="form-group">',
+				'<form class="form-horizontal" role="form" id="product-form-0" data-id="0" data-model="product">',
+				'	<div class="form-group">',
 				'		<label for="pdname" class="col-sm-2 control-label">产品名称</label>',
 				'		<div class="col-sm-10">',
 				'			<input type="text" data-bind="name" class="form-control" id="pdname" placeholder="请输入产品名称"/>',

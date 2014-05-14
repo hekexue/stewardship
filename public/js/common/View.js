@@ -20,6 +20,22 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 		// }
 		return true;
 	}
+
+	/*全局监听表单变化*/
+	$(document).delegate("[data-bind]", "change", function(e) {
+		var form = $(e.target).closest("[data-model]"),
+			change = form.attr("data-change"),
+			model = form.closest("[data-model]").attr("data-model");
+		if (change || change === undefined) {
+			//监听表单字段的变更，将结果对外广播
+			var target = $(e.target),
+				attr = target.attr("data-bind"),
+				id = form.attr("data-id"),
+				val = target.val();
+			pubsub.publish(model + CONST.VRC, id, attr, val, true);
+		}
+	})
+
 	var pubsub = pubSub.getInstance(),
 		messageBox = MessageBox.getInstance(),
 		confirm = Confirm.getInstance(),
@@ -44,14 +60,19 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				var me = this;
 				if (this.elem) {
 					this.elem.on("change", function(e) {
-						//监听表单字段的变更，将结果对外广播
-						var target = $(e.target),
-							attr = target.attr("data-bind"),
-							val = target.val(),
-							id = me.getRecordIdByEvt(e),
-							publishToModel = me.parent.publishToModel;
-						pubsub.publish(me.id + CONST.VRC, id, attr, val, publishToModel);
-						me.parent.publishToModel = true;
+						var form = $(e.target).closest("[data-model]"),
+							model = form.attr("data-model");
+						if (model === this.id) {
+							//监听表单字段的变更，将结果对外广播
+							var target = $(e.target),
+								attr = target.attr("data-bind"),
+								val = target.val(),
+								id = me.getRecordIdByEvt(e),
+								publishToModel = me.parent.publishToModel;
+							pubsub.publish(me.id + CONST.VRC, id, attr, val, publishToModel);
+							me.parent.publishToModel = true;
+							form.attr("data-change", true);
+						}
 					})
 				}
 			},
@@ -140,8 +161,7 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				info.show(msg);
 			},
 			error: function(msg) {
-				this.info.show(msg, "error");
-				messageBox.show(msg);
+				info.show(msg, "error");
 			},
 			confirm: function(title, msg, cb) {
 				confirm.show({
@@ -154,14 +174,21 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				if (newInstance === true) {
 					var win = new Win();
 					win.show(options);
-					win = null;
+					return win;
 				} else {
 					if (!this.Window) {
 						this.Window = new Win();
 					}
 					this.Window.show(options);
 				}
-
+			},
+			hideWin: function(win) {
+				if (win) {
+					win.hide();
+					win = null;
+				} else {
+					this.Window.hide();
+				}
 			}
 		});
 	//定义类方法
@@ -181,6 +208,7 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				//方案有两种，在返回的数据中，将json结构数据扁平化；另外一种
 				var dom = this.elem.find("#" + getDomId(this, id));
 				this.publishToModel = publishToModel;
+				dom.attr("data-change", publishToModel || false);
 				if (single === true) {
 					dom.find("[data-bind=" + attr + "]").val(val);
 				} else {

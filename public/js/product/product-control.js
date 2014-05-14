@@ -49,9 +49,9 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 			View: UI.getInstance(),
 			Model: Model,
 			events: {
-				"#btnSaveRecord click": "onSave",
-				"#btnUpdateRecord click": "onUpdate",
-				".hook-stewardship click": "onStewardship"
+				"#btnSaveRecord click g": "onSave",
+				"#btnUpdateRecord click g": "onUpdate",
+				".hook-stewardship click g": "onStewardship"
 			}
 		},
 		instance = null;

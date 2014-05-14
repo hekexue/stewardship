@@ -31,7 +31,8 @@ define(['jquery', '../common/Widget'], function($, Widget) {
 					"position": "absolute",
 					"width": width,
 					"top": 0,
-					"left": 0
+					"left": 0,
+					"zIndex": 99999
 				}).find("#infoMsg").html(msg);
 				this.hideTimer = setTimeout(function() {
 					me.hide();

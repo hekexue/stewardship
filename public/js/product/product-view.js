@@ -6,10 +6,10 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			template: tmpl.defaultView()
 		},
 		getRecordIdByEvt: function(e) {
-			var id = $(e.target).closest("form").attr("data-id");
-			if (id === undefined) {
-				id = $("#tabProduct").find("form").attr("data-id");
-			}
+			var id = $("#recordForm").find("form").attr("data-id");
+			// if (id === undefined) {
+			//	id = $("#tabProduct").find("form").attr("data-id");
+			// }
 			return id;
 		},
 		getListItemId: function(e) {
@@ -23,11 +23,12 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 		showAdd: function(record) {
 			var dom = this.renderEl(tmpl.record(), {
 				"data": record
-			});
+			}),
+				me = this;
 			this.win({
 				title: "新建",
 				msg: dom,
-				footer: '<button id="btnSaveRecord" class="btn btn-success">保存</button>',
+				footer: '<button id="btnSaveRecord" class="btn btn-success">保存</button>'
 			});
 		},
 		showEdit: function(record) {
@@ -41,7 +42,7 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			});
 		},
 		afterSaveRecord: function() {
-			$("#productRrecordWin").modal("hide");
+			this.hideWin();
 		},
 		afterUpdateRecord: function(record) {
 			$("#stewradshipWindow").modal("hide");

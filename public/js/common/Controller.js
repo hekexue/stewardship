@@ -123,11 +123,21 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					selector = keys[0],
 					evtName = keys[1];
 					handler = this[evts[i]];
-					this.View.elem.delegate(selector, evtName, function(handler) {
-						return function(e) {
-							handler.call(me, e);
-						}
-					}(handler))
+					if (keys[2] && keys[2].length === 1) {
+						$(document.body).delegate(selector, evtName, function(handler) {
+							return function() {
+								var args = Array.prototype.slice.call(arguments, 0);
+								handler.apply(me, args);
+							}
+						}(handler));
+					} else {
+						this.View.elem.delegate(selector, evtName, function(handler) {
+							return function() {
+								var args = Array.prototype.slice.call(arguments, 0);
+								handler.apply(me, args);
+							}
+						}(handler));
+					}
 				}
 			},
 			getRecordForm: function() {
