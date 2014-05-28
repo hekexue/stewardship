@@ -1,6 +1,6 @@
 var username = "program",
 	password = "programuser",
-	mongoHost = "192.168.136.8",
+	mongoHost = "192.168.1.106",
 	mongoPort = "",
 	mongoBase = "productstewardship",
 	mongoOptions = "";
