@@ -1,4 +1,4 @@
-define(["./product-view", "./product-model", "../common/Controller", "../lib/PubSub", "../stewardship/stewardshipTable"], function(UI, Model, Controller, pubsub, steTable) {
+define(["./product-view", "./product-model",  "../stewardship/stewardshipModel", "../common/Controller", "../lib/PubSub", "../stewardship/stewardshipTable"], function(UI, Model,stewardshipModel, Controller, pubsub, steTable) {
 	var CONST = Controller.CONST,
 		Product = Controller.extend({
 			getRecordByEvt: function(e) {
@@ -39,8 +39,18 @@ define(["./product-view", "./product-model", "../common/Controller", "../lib/Pub
 					this.View.error(res[CONST.RESSTATUS]);
 				}
 			},
-			onStewardship: function() {
-				var table = steTable.getInstance();
+			onStewardship: function(e) {
+				//从数据源中获取“评判”数据，如果是空或者undefined，则创建一个；将其绑定到视图中；
+				var record = this.getRecordByEvt(e),
+				table = steTable.getInstance(),
+				view = table.getView(),
+				stshipData = record.getAttr("stewardship");
+				if(stshipData === null){
+					stshipData = stewardshipModel.createRecord();
+				}
+				
+				
+				this._bind(view,stshipData);
 				table.show();
 			}
 		}),

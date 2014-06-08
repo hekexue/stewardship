@@ -4,6 +4,9 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 	 * 如果传递了elem，则优先使用elem作为对象，
 	 * 如果传递了选择器，则在初始化UI的时候，使用选择器来初始化
 	 */
+	
+
+	//TODO:修改现在的模型绑定方式，增添data-model属性可以让视图自己绑定不同的数据实体。视图和数据层的双向绑定依靠该方式去确定，如果没有指定视图的data-model属性的情况下，再使用视图的ID来当做默认的数据ID
 	var CONST = cst;
 
 	function optionCheck(options) {
@@ -146,24 +149,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			getDefaultData: function() {
 				return {};
 			},
-			getFiledValue: function(record, keyfield) {
-				var keys = [],
-					value;
-				if (keyfield.indexOf(".") > 0) {
-					keys = keyfield.split(".");
-				} else {
-					keys.push(keyfield);
-				}
 
-				for (var i = 0, k = ""; k = keys[i]; i++) {
-					value = record[k];
-					if (value === undefined || value === null) {
-						return null;
-					}
-					record = value;
-				}
-				return value;
-			},
 			/**
 			 * 数据和视图绑定
 			 * @param  {String||JQuery Object} view   要绑定数据的视图
@@ -175,19 +161,27 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					me = this;
 				//获取视图中的控件
 				if (type.isString(view)) {
-					view = $(view);
-					tmpView = view.clone();
+					view = $(view);					
 				}
+				tmpView = view.clone();
 				//搜索绑定控件及属性标记
 				tmpView.find("[data-bind]").each(function(index, domEle) {
 					//根据不同元素的类型，进行不同形式的赋值：需要考虑到1普通输入框，2checkbox，3radio button ，4select，5普通dom元素
 					var dom = $(domEle),
-						field = dom.attr("data-bind");
+						field = dom.attr("data-bind"),
+						value = me.getFiledValue(record.attributes, field);
 					switch (dom.attr("type").toLowerCase()) {
 						case "text":
 						case "textarea":
-							dom.val(me.getFiledValue(record.attributes, field))
+							dom.val(value)
 							break;
+						case "checkbox":
+							dom.attr("checked",value === false ? false :true);
+							break;
+						case "select":
+						break;
+						default:
+							dom.attr("data-value",value);
 					}
 				})
 				tmpView.find("form").attr("data-id", record.id);

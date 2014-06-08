@@ -6,7 +6,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
 				success(data);
 				cb(data)
-			}) : cfg.success = cb;
+			}) : (cfg.success = cb);
 		}
 		return cfg;
 	}
@@ -17,7 +17,9 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 		pubsub.publish.apply(pubsub, args);
 	}
 
+
 	function checkChange(instance, attr, val) {
+		//TODO:需要考虑到这种情况：val.object.xxx属性值的变化,可以暂时使用序列化后的字符串比较来确定一个object是否有变化
 		var needpush = true;
 		if (instance.original[attr] !== val) {
 			for (var i = 0, len = instance.changes.length; i < len; i++) {
@@ -51,7 +53,54 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 		}
 		return result;
 	}
+ 	function getFieldValue (record, keyfield) {
+		var keys = [],
+			value;
+		if (keyfield.indexOf(".") > 0) {
+			keys = keyfield.split(".");
+		} else {
+			keys.push(keyfield);
+		}
 
+		for (var i = 0, k = ""; k = keys[i]; i++) {
+			value = record[k];
+			if (value === undefined || value === null) {
+				return null;
+			}
+			record = value;
+		}
+		return value;
+	}
+
+	/**
+	 * 给具体的字段赋值
+	 * @param {object} data      要赋值的数据体
+	 * @param {string} fieldName 字段名称（支持 XXX.XXX.XXXX格式，需要注意的是，各个字段名称不应该有javascript语言的关键字）
+	 * @param {any} value     字段对应的值
+	 */
+	function setFieldValue(data, fieldName,value){
+	var fields = fieldName.split("."),
+		len = fields.length,
+		fdName ="",
+		record = data;
+		if(len==1){
+			data.fieldName = value;
+			return data;
+		}else if(len >1){
+			for(var i =0;i<len ; i++){
+				fdName = fields[i];				
+				if(record[fdName] === undefined || record[fdName]===null){
+					record[fdName]={};
+				}				
+				if(i+1 === len){
+					record[fdName] = value;
+				}else{
+					record = record[fdName];
+				}
+			}			
+			return data;
+		}
+	}
 	var pubsub = pubSub.getInstance(),
 		CONST = cst,
 		Model = Evt.extend({
@@ -87,6 +136,10 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 					}
 					return this.parent.set(this.id, attr, publishToView, arguments[1]);
 				}
+			},
+			getAttr:function  (attr) {
+				var value = getFieldValue(this.attributes || {}, attr);
+				return value;
 			},
 			validCheck: function() {
 				return true;
@@ -367,6 +420,31 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 					pubsub.publish(this.id + "View:CreateRecord", record);
 				}
 				return record;
+			},
+			pickDatefromView:function  (record, view) {
+				
+				var data ={},
+				id = record.id;
+				view.find("[data-bind]").each(function(index,elem){
+					var dom = $(domEle),
+						field = dom.attr("data-bind"),
+						value = null;
+					switch (dom.attr("type").toLowerCase()) {
+						case "text":
+						case "textarea":
+							value = dom.val();
+							break;
+						case "checkbox":
+							value = dom.attr("checked") || false;
+							break;
+						case "select":
+						break;
+						default:
+							value = dom.attr("data-value");
+					}
+					data = setFieldValue(data,field,value);
+				});
+				this.set(id,data,false);
 			},
 			/**
 			 * 设置数据记录的字段值
