@@ -57,7 +57,7 @@ define(function() {
 		//add include method
 		Class.include = function() {
 
-		}
+		};
 
 		//设置绑定函数
 		Class.prototype.proxy = Class.proxy = function(fn, scope) {
@@ -67,8 +67,7 @@ define(function() {
 			var me = this,
 				args = Array.prototype.slice.call(arguments, 2);
 			return function() {
-				args = args.concat(Array.prototype.slice.call(arguments, 0));
-				return fn.apply(scope ? scope : me, args);
+				return fn.apply(scope ? scope : me, args.concat(Array.prototype.slice.call(arguments, 0)));
 			}
 		}
 

@@ -3,4 +3,4 @@ define(["../common/Model"], function(Model) {
 		id: "stewardship"
 	});
 	return StewardshipModel;
-})
+});

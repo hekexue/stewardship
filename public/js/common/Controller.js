@@ -26,42 +26,29 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 	}
 
 	function initPubSubs(instance) {
-
+        //TODO:整个数据双向绑定的逻辑和架构需要重新抽象出来，放到core.js里面。
 		pubsub.on(instance.id + CONST.VRC, function(id, attr, val, publishToModel) {
 			var publishToView = false;
 			publishToModel && instance.Model.set(id, attr, val, publishToView);
 		});
 
-
-		// //client-side data binding
-		// pubsub.on(instance.id + "View:RecordChange", function(id, attr, val) {
-		//	instance.Model.set(id, attr, val, false);
-		// });
-		// // pubsub.on(instance.id + "View:RecordAdd", function(record) {
-		// //	instance.Model.add(record, false);
-		// // });
 		pubsub.on(instance.id + CONST.VRR, instance.onRemove);
 
 		pubsub.on(instance.id + CONST.MRC, function(id, attr, val, type) {
 			var publishToModel = false;
-			instance.View.parent.onRecordChange(id, attr, val, publishToModel, type);
+		    instance && instance.View && instance.View.parent && instance.View.parent.onRecordChange(instance.id || instance.ModelId,id, attr, val, publishToModel, type);
 		});
 		pubsub.on(instance.id + CONST.MRA, function(record) {
 			instance.View.parent.onRecordAdd(record);
 		});
-		// // pubSub.on(instance.id + "Model:RecordAdd", function(record) {
-		// //	instance.View.onRecordAdd(record, false);
-		// // });
-		// pubSub.on(instance.id + "Model:RecordRemove", function(record) {
-		//	instance.View.onRecordRmv(record, false);
-		// });
+
 	}
 	//TODO:需要修改所有的before　和　after事件，将其空出来以便真正的业务控件复写，同时对外发布消息，提供服务端返回的数据
 	var pubsub = pubSub.getInstance(),
 		Controller = evt.extend({
 			actived: false,
 			init: function(options) {
-				options ? "" : options = {};
+				options ? "" : (options = {});
 				this.options = options || {};
 				this._super(options);
 				if (!options.id && !this.id) {
@@ -82,14 +69,8 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.active();
 					this.inited = true;
 				}
-				//if (this.options.View && this.options.Model) {
-
-
-				//if (type.isObject(this.options.bindData)) {
-				//this.Model.bindData = this.options.bindData;
 				initPubSubs(this);
-				//}
-				//}
+
 			},
 			getEvtName: function(name) {
 				return this.id + name;
@@ -123,7 +104,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					handler;
 				for (var i in evts) {
 					keys = i.split(" ");
-					selector = keys[0],
+					selector = keys[0];
 					evtName = keys[1];
 					handler = this[evts[i]];
 					if (keys[2] && keys[2].length === 1) {
@@ -138,7 +119,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 							return function() {
 								var args = Array.prototype.slice.call(arguments, 0);
 								handler.apply(me, args);
-							}
+							};
 						}(handler));
 					}
 				}
@@ -156,7 +137,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 			 * @param  {Model Instance} record 单条数据记录
 			 * @return {[type]}        [description]
 			 */
-			_bind: function(view, record) {
+			_bind: function(view, record,customBind) {
 				var tmpView = "",
 					me = this;
 				//获取视图中的控件
@@ -169,11 +150,11 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					//根据不同元素的类型，进行不同形式的赋值：需要考虑到1普通输入框，2checkbox，3radio button ，4select，5普通dom元素
 					var dom = $(domEle),
 						field = dom.attr("data-bind"),
-						value = me.getFiledValue(record.attributes, field);
-					switch (dom.attr("type").toLowerCase()) {
+						value = record.getAttr(field);
+					switch ((dom.attr("type") || dom.prop("nodeName")).toLowerCase()) {
 						case "text":
 						case "textarea":
-							dom.val(value)
+							dom.val(value);
 							break;
 						case "checkbox":
 							dom.attr("checked",value === false ? false :true);
@@ -183,8 +164,18 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 						default:
 							dom.attr("data-value",value);
 					}
-				})
-				tmpView.find("form").attr("data-id", record.id);
+                    if(typeof customBind ==="object" && value !== undefined && value !== null){
+                        if(customBind.rule){
+                            if(customBind.rule.test(field)){
+                                customBind.handler(field,value,dom);
+                            }
+                        }else {
+                            customBind[field](dom, value);
+                        }
+                    }
+				});
+
+				tmpView.closest("[data-model]").attr("data-id", record.id);
 				view.replaceWith(tmpView);
 
 			},
@@ -205,7 +196,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.beforeActive(function() {
 						me.actived = true;
 						me.show();
-					})
+					});
 				}
 			},
 
@@ -265,7 +256,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					record = this.getRecordByEvt(e);
 				this.beforeSave(record, function(recd) {
 					recd.save(me.proxy(me.afterSave, me, recd));
-				})
+				});
 			},
 			getRecordIdByEvt: function(e) {
 				throw new Error("need to overwrite this function");
@@ -314,7 +305,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					if (res === true) {
 						record.remove(me.proxy(me.afterRemove, me, record));
 					}
-				})
+				});
 			},
 
 			afterRemove: function(record, res) {
@@ -347,7 +338,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				this.beforeShow(function() {
 					me.View.show.apply(me.View, arguments);
 					me.afterShow.apply(me, arguments);
-				})
+				});
 			},
 			afterShow: function() {
 
@@ -360,7 +351,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 				this.beforeHide(function() {
 					me.View.hide.apply(me.View, arguments);
 					me.afterHide.apply(me, arguments);
-				})
+				});
 			},
 			afterHide: function() {
 

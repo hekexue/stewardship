@@ -26,7 +26,7 @@ define(["../common/ClassBase","./Type"],function (Class, util) {
 					var fn = null,
 						len = 0,
 						fns = this.events[name],
-						args = Array.prototype.slice.apply(arguments,1),
+						args = Array.prototype.slice.call(arguments,1),
 						outer = function (handler) {
 							return function () {
 								handler.apply(null,args);

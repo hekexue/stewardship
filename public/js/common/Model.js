@@ -5,7 +5,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 		if (typeof cb === "function") {
 			typeof cfg.success === "function" ? (success = cfg.success, cfg.success = function(data) {
 				success(data);
-				cb(data)
+				cb(data);
 			}) : (cfg.success = cb);
 		}
 		return cfg;
@@ -84,7 +84,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 		fdName ="",
 		record = data;
 		if(len==1){
-			data.fieldName = value;
+			data[fieldName] = value;
 			return data;
 		}else if(len >1){
 			for(var i =0;i<len ; i++){
@@ -109,7 +109,9 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				this._super(options);
 				//this.parent = options.parent || Model;
 				this.attributes = options.data || {};
+                this.ModelId = this.id;
 				this.id = this.attributes._id || 0;
+                this.attributes._id = this.id;
 				this.original = $.extend({}, this.attributes);
 				this.changes = [];
 				this.synced = false;
@@ -123,18 +125,18 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			 * @param {Any  or Boolean} val  属性的值，或，“是否同步客户端的值”
 			 */
 			set: function(attr, val) {
-				var publishToView = true;
+				var pubToView = true;
 				if (type.isString(attr) && arguments.length >= 2) {
 					if (!CONST.DATASAFE && arguments[2] === true) {
-						publishToView = false;
+                        pubToView = false;
 					}
-					return this.parent.set(this.id, attr, val, publishToView, arguments[2]);
+					return this.parent.set(this.id, attr, val, pubToView, arguments[2]);
 				}
 				if (type.isObject(attr) && arguments.length >= 1) {
 					if (!CONST.DATASAFE && arguments[2] === true) {
-						publishToView = false;
+                        pubToView = false;
 					}
-					return this.parent.set(this.id, attr, publishToView, arguments[1]);
+					return this.parent.set(this.id, attr, pubToView, arguments[1]);
 				}
 			},
 			getAttr:function  (attr) {
@@ -216,13 +218,13 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 						"id": this.attributes._id,
 						"updateType": "all",
 						"data": this.attributes
-					}
+					};
 				} else {
 					postData = {
 						"id": this.attributes._id,
 						"updateType": "partial",
 						"data": getUpdateProperty(this)
-					}
+					};
 				}
 
 				//合并配置项
@@ -320,7 +322,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 	Model.create = function(extend) {
 		var fun = Model.extend(extend);
 		fun.prototype.parent = fun;
-
+        fun.id = fun.prototype.id;
 		function getDataPubToView(dataBind, changedData) {
 			var property = null,
 				hasChange = false,
@@ -353,8 +355,15 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 						record = null;
 					}
 				}
-			})
+			});
 		}
+        //继承事件机制
+        fun.ext({
+            on:Evt.prototype.on,
+            fire:Evt.prototype.fire,
+            un:Evt.prototype.un,
+            clearEvents:Evt.prototype.clearEvents
+        });
 		//生成类方法
 		fun.ext({
 			records: {},
@@ -368,6 +377,7 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			getRecord: function(rid, cb) {
 				var record = null;
 				if (CONST.DATASAFE) { //如果对数据一致性及安全性要求很高，则始终从服务端获取数据
+                    //TODO:这里的逻辑有待完善、测试
 					record = this.createRecord({
 						_id: rid
 					});
@@ -399,12 +409,12 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			},
 			/**
 			 * 创建一个数据记录
-			 * @param  {boolean} publishToView 内部调用参数，用来标记是否触发UI和Model之间的数据变更关联
+			 * @param  {boolean} pubToView 内部调用参数，用来标记是否触发UI和Model之间的数据变更关联
 			 * @return {[type]}               一条新的、空数据记录
 			 */
-			createRecord: function(data, publishToView) {
-				if (arguments.length == 0 || (arguments.length == 1 && type.isBoolean(data))) {
-					publishToView = data,
+			createRecord: function(data, pubToView) {
+				if (arguments.length === 0 || (arguments.length == 1 && type.isBoolean(data))) {
+                    pubToView = data,
 					data = {
 						_id: "0"
 					};
@@ -415,13 +425,22 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 						data: data
 					});
 				record.id = record.attributes._id;
+
 				this.records[record.id] = record;
-				if (publishToView) {
+				if (pubToView) {
 					pubsub.publish(this.id + "View:CreateRecord", record);
 				}
 				return record;
 			},
-			pickDatefromView:function  (record, view) {
+            watchField: function (fieldName,handler) {
+                if(fieldName && typeof handler === "function") {
+                    var args = Array.prototype.slice.call(arguments, 0);
+                    args[0] = this.id + ":" + fieldName + ":" + CONST.FIELDCHANGE;
+                    this.on.apply(this, args);
+                    return true;
+                }
+            },
+			pickDatafromView:function  (record, view) {
 				
 				var data ={},
 				id = record.id;
@@ -446,15 +465,17 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				});
 				this.set(id,data,false);
 			},
+
 			/**
 			 * 设置数据记录的字段值
 			 * @param {string} rid           记录iD
 			 * @param {string or Object} attr          属性名称  或  包含属性数据的对象
 			 * 例如："name" 或者  "person.dept.name" 或 {person:{ dept:{id:"007",name:""},age:18}}
 			 * @param {Any} val           属性的值 或 无
-			 * @param {boolean} publishToView     内部调用参数，用来标记是否把数据变动通知给视图
+			 * @param {boolean} pubToView     内部调用参数，用来标记是否把数据变动通知给视图
+             * @param {boolean} triggerChangeEvent     内部调用参数，用来标记是否触发数据字段变动事件
 			 */
-			set: function(rid, attr, val, publishToView) {
+			set: function(rid, attr, val, pubToView,triggerChangeEvent) {
 				var record = this.find(rid),
 					me = this,
 					syncServerData,
@@ -466,12 +487,12 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 				if (!type.isArray(record.changes)) {
 					reocrd.changes = [];
 				}
-				//适用情况：set("rid","propertyName","propertyValue",publishToView)
+				//适用情况：set("rid","propertyName","propertyValue",pubToView)
 				if (type.isString(attr) && arguments.length >= 3) {
 					//TODO:需要处理多层级赋值的情况,例如 set("rid","person.dept.name","value of person's deptName",publishToView)
 					keyValue = true;
 					syncServerData = arguments[4];
-					record.attributes[attr] = val;
+					record.attributes = setFieldValue(record.attributes,attr,val);
 					//如果同步服务端数据，则更新记录的原始值，确保原始值和数据记录一致
 					if (syncServerData === true) {
 						record.original[attr] = val;
@@ -479,16 +500,20 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 						checkChange(record, attr, val);
 					}
 					record.synced = false;
-					if (publishToView === true) {
-						publishToView(this.id + CONST.MRC, rid, attr, val, keyValue);
+					if (pubToView === true) {
+						publishToView((this.id || this.ModelId) + CONST.MRC, rid, attr, val, keyValue);
 					}
+                    //TODO：此处需要考虑实现自定义的事件冒泡机制，有时候可能需要监听某个字段的数据变更，有时候需要监听任意字段的数据变更。可以考虑JQuery的事件代理如何实现。
+                    if(triggerChangeEvent !== false){
+                        this.fire(this.id+":"+"all"+":"+CONST.FIELDCHANGE,record,attr,val,keyValue);
+                    }
 					return record;
 				}
 				if (type.isObject(attr) && arguments.length >= 2) {
 					keyValue = false;
-					//适用情况：set("rid",{data:data}, publishToView);
-					syncServerData = publishToView,
-					publishToView = val;
+					//适用情况：set("rid",{data:data}, pubToView);
+					syncServerData = pubToView,
+                        pubToView = val;
 					for (var i in attr) {
 						if (attr.hasOwnProperty(i)) {
 							record.attributes[i] = attr[i];
@@ -501,10 +526,12 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 					}
 					record.synced = false;
 
-					if (publishToView === true) {
-						var data = getDataPubToView(this.dataBind, attr);
-						data !== false && publishToView(this.id + CONST.MRC, rid, data, null, keyValue);
-					}
+					if (pubToView === true) {
+                        var data = getDataPubToView(this.dataBind, attr);
+                        if (data !== false) {
+                            publishToView((this.id|| this.ModelId) + CONST.MRC, rid, data, null, keyValue);
+                        }
+                    }
 					return record;
 				}
 			},
@@ -616,9 +643,9 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 			loadRemote: function() {
 
 			}
-		})
+		});
 		return fun;
-	}
+	};
 	//将model原有的继承方式改为创建方式，有别于其他类的继承
 	//Model.extend = Model.create;
 	return Model;

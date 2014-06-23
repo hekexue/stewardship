@@ -34,7 +34,7 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 				val = target.val();
 			pubsub.publish(model + CONST.VRC, id, attr, val, true);
 		}
-	})
+	});
 
 	var pubsub = pubSub.getInstance(),
 		messageBox = MessageBox.getInstance(),
@@ -73,7 +73,7 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 							me.parent.publishToModel = true;
 							form.attr("data-change", true);
 						}
-					})
+					});
 				}
 			},
 			getRecordIdByEvt: function(e) {
@@ -202,11 +202,14 @@ define(['jquery', 'bootstrap', '../lib/PubSub', '../lib/Event', '../lib/Type', '
 		//生成类方法
 		fun.ext({
 			publishToModel: true,
-			onRecordChange: function(id, attr, val, publishToModel, single) {
+			onRecordChange: function(model,id, attr, val, publishToModel, single) {
 				//使用代码改变数据的时候，界面更新，同时，数据变更不再通知给Model
 				//TODO:当前这种处理方式，只支持单键数据绑定，如果要支持类似于 'data-bind:person.dept.name'需要再写代码做处理
 				//方案有两种，在返回的数据中，将json结构数据扁平化；另外一种
-				var dom = this.elem.find("#" + getDomId(this, id));
+				var dom = this.elem.find("[data-model='"+model+"']");
+                if(!dom[0]){
+                    dom = $(document).find("[data-model='"+model+"']");
+                }
 				this.publishToModel = publishToModel;
 				dom.attr("data-change", publishToModel || false);
 				if (single === true) {

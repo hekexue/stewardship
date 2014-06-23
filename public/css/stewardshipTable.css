@@ -17,3 +17,8 @@ table.tb{border-collapse: separate;}
 .tb tr:hover .ms-hover .check{color:green;}
 .ms-hover .check{cursor:pointer; color:rgba(0,128,0,1);}
 .tb tr:hover .checked .check,.checked .check{color:rgba(0,128,0,1); font-weight: bold;}
+.risk .highRisk{color:red;font-weight: bold;}
+.risk .lessHighRisk{color:yellow;font-weight: bold;}
+.risk .normalRisk{color:green;font-weight: bold;}
+.risk .riskText{display:none;}
+.checked .riskText{display: block;}

@@ -12,7 +12,8 @@ define(["jquery"], function($) {
 			VRR: "View:RecordRemove",
 			VRC: "View:RecordChange",
 			MRR: "Model:RecordRemove",
-			MRC: "Model:RecordChange"
+			MRC: "Model:RecordChange",
+            FIELDCHANGE:"Model:FieldChange"
 		}
 	return $.extend({}, apiResponseConfig, dataSafeConfig, MVCInnerEventConfig);
 })

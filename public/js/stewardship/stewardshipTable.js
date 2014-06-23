@@ -1,14 +1,15 @@
 define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewardshipModel"], function($, Box, template, PubSub, Model) {
-	var pubsub = PubSub.getInstance();
+    var pubsub = PubSub.getInstance();
 	var Table = Box.extend({
 			template: template.table(),
 			init: function(options) {
 				this.options = options || {};
 				this.elem = null;
-				this.renderData = $.extend({
+				this.renderDvata = $.extend({
 					data: {}
 				}, options);
 				this.render();
+
 			},
 			bindEvent: function() {
 				var me = this;
@@ -16,7 +17,7 @@ define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewa
 				//this.elem.delegate("table.tb .ipt", "mouseover", this.onTableHover);
 				this.elem.delegate("table.tb .ipt", "focus", this.onTableHover);
 				this.elem.delegate("table.tb .ipt", "blur", this.onTableHover);
-				this.elem.delegate("table.tb .check", "click", this.onCheckClick);
+				this.elem.delegate("table.tb .check", "click", this.proxy(this.onCheckClick,this));
 				this.elem.delegate("table.tb .ipt", "change", function() {
 					var ipt = $(this),
 						tr = ipt.closest("tr").find(".ipt");
@@ -35,10 +36,16 @@ define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewa
 			setData: function(data) {
 				this.sdData = data;
 			},
-			onCheckClick: function() {
-				var td = $(this).closest("td");
+			onCheckClick: function(e) {
+				var td = $(e.target).closest("td"),
+                    span = td.find("span"),
+                    field = span.attr("data-bind"),
+                    value = span.html();
 				td.siblings().removeClass("checked");
 				td.addClass("checked");
+                var record = this.dataPicker(this.getView());
+                field = field.substring(0,field.lastIndexOf("."))+".damageLevel";
+                record.set(field,value);
 			},
 			getView: function() {
 				return this.elem.find("table") || null;
@@ -81,15 +88,37 @@ define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewa
 					ipt.addClass("btn-danger");
 				}
 				//判断是否为数值
+                var dataField = ipt.attr("data-bind");
 				//获取应该填写的数据输入项
+
 				//如果全部都有值，则计算对应值，如果某个输入框为空或者不合法，则需要
+
+
 			},
 			dataPicker: function(view) {
 				var id = view.attr("data-id"),
 					record = Model.getClientRecord(id);
-				record = Model.pickDatefromView(record, view);
+                return record;
 				//遍历view 的data-bind属性，赋值给record；
 			},
+            showRiskLevel: function (field) {
+                var span = this.elem.find("[data-bind='"+field+"']"),
+                    tr = span.closest("tr");
+                tr.find("[type='risk']").removeClass("checked");
+                span.addClass("checked");
+            },
+            showQ:function(value,field){
+                this.elem.find('[data-bind="' + field +'"]').val(value);
+            },
+            showDamage:function(value,field){
+                var dom = this.elem.find("[data-bind=']"+ field +"']");
+                    td = dom.closest("td");
+                td.siblings().removeClass("checked");
+                td.addClass("checked");
+            },
+            showSuperviserComment:function(value){
+                this.elem.find("[data-bind='superviseComment']").val(value);
+            },
 			onOK: function() {
 				var data = this.dataPicker(this.getView());
 				pubsub.publish("stewardshiptable:ok", data);
@@ -97,6 +126,7 @@ define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewa
 			onReset: function() {
 				this.elem.find("input").val("");
 				this.elem.find("td").removeClass("checked");
+                this.elem.find(".checked").removeClass("checked");
 			}
 		}),
 		instance = null;
@@ -117,5 +147,5 @@ define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewa
 			instance.show();
 			return instance;
 		}
-	}
+	};
 })

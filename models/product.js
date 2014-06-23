@@ -59,8 +59,11 @@ module.exports = {
 						return;
 					}
 					doc[0].id = doc[0]._id.toString();
+                    if(doc[0].stewardship){
+                        doc[0].stewardship._id = doc[0].id;
+                    }
 					callBack("ok", doc[0]);
-				})
+				});
 			}
 		} else {
 			callBack(ckres, null);
