@@ -130,9 +130,11 @@ module.exports = {
 	update: function(data, callBack) {
 		var id = data && data.id;
 		if (id) {
+			var updateObj = data.data;
+			delete updateObj._id;
 			db.findAndModify("product", {
 				_id: new ObjectID(id)
-			}, {}, data, function(err, doc) {
+			}, {}, data.data, function(err, doc) {
 				if (err) {
 					logger.log(err);
 					callBack(err, doc);

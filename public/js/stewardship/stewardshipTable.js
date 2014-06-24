@@ -101,27 +101,43 @@ define(["jquery", "../widgets/floatbox", "./template", "../lib/PubSub", "./stewa
                 return record;
 				//遍历view 的data-bind属性，赋值给record；
 			},
-            showRiskLevel: function (field) {
-                var span = this.elem.find("[data-bind='"+field+"']"),
+            showRiskLevel: function (field,view) {
+            	if(!view){
+            		view = this.elem;
+            	}
+                var span = view.find("[data-bind='"+field+"']"),
                     tr = span.closest("tr");
+                    if(span[0]){
                 tr.find("[type='risk']").removeClass("checked");
                 span.addClass("checked");
+                    }
+                
             },
             showQ:function(value,field){
                 this.elem.find('[data-bind="' + field +'"]').val(value);
             },
-            showDamage:function(value,field){
-                var dom = this.elem.find("[data-bind=']"+ field +"']");
+            showDamage:function(value,field,view){
+            	if(!view){
+            		view = this.elem;
+            	}
+                var dom = view.find("[data-bind='"+ field +"']");
                     td = dom.closest("td");
-                td.siblings().removeClass("checked");
-                td.addClass("checked");
+                    if(dom[0]){
+		                td.siblings().removeClass("checked");
+		                td.addClass("checked");
+            		}
             },
-            showSuperviserComment:function(value){
-                this.elem.find("[data-bind='superviseComment']").val(value);
+            showSuperviserComment:function(value,view){
+            	if(!view){
+            	view = this.elem;
+            	}
+                view.find("[data-bind='superviseComment']").val(value);
             },
 			onOK: function() {
 				var data = this.dataPicker(this.getView());
 				pubsub.publish("stewardshiptable:ok", data);
+				this.hide();
+				this.onReset();
 			},
 			onReset: function() {
 				this.elem.find("input").val("");

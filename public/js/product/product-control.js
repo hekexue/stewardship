@@ -44,10 +44,21 @@ define(["./product-view", "./product-model",  "../stewardship/stewardship-contro
 					this.View.error(res[CONST.RESSTATUS]);
 				}
 			},
+            afterUpdate: function(record, res) {
+                if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
+                    this.View.msg("更新成功");
+                    this.View.afterUpdateRecord(record);
+                    this.setRouter("");
+                    this.afterShow();
+                } else {
+                    this.View.error(res[CONST.RESSTATUS]);
+                }
+            },
             onStewardshipOk:function(data){
                 var record = this.Model.getClientRecord(data.id);
                 record.set("stewardship",data,false,false);
                 record.set("superviseComment", data.attributes.superviseComment);
+                record.set("riskLevel", data.attributes.riskLevel);
             },
 			onStewardship: function(e) {
 				//从数据源中获取“评判”数据，如果是空或者undefined，则创建一个；将其绑定到视图中；
@@ -249,16 +260,18 @@ define(["./product-view", "./product-model",  "../stewardship/stewardship-contro
                             }
                         }
                     });
-				}
-                var companeyClass = record.getAttr("companyClass");
-                if(companeyClass){
-                    stshipData.set("companyClass", record.getAttr("companyClass"));
-                    this._bind(view,stshipData,this.stewardship.customDataBind);
-                    table.show();
-                }else{
-                    this.View.error("请先选择企业类型");
+                    var companeyClass = record.getAttr("companyClass");
+                    if(companeyClass){
+                        stshipData.set("companyClass", record.getAttr("companyClass"));
+                    }else{
+                        this.View.error("请先选择企业类型");
+                    }
+				}else{
+                    stshipData.attributes._id = stshipData.id = record.id;
+                    stshipData = this.stewardship.createRecord(stshipData.attributes);
                 }
-
+                this._bind(view,stshipData,this.stewardship.customDataBind);
+                table.show();
 			}
 		}),
 		options = {

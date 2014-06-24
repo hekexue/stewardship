@@ -45,7 +45,7 @@ define(["jquery", "../common/View", "./product-template"], function($, View, tmp
 			this.hideWin();
 		},
 		afterUpdateRecord: function(record) {
-			$("#stewradshipWindow").modal("hide");
+			this.hideWin();
 		},
 		afterRemoveRecord: function(record) {
 			$("#" + record.attributes._id).remove();

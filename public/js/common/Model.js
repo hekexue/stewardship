@@ -567,8 +567,13 @@ define(["jquery", "./DataSource", "../lib/PubSub", "../lib/Event", "./CONST", ".
 					record = this.createRecord(data);
 					this.records[record.id] = record;
 				} else {
-					//如果已经存在，则更新数据
+					try{
+//如果已经存在，则更新数据
 					record.set(data, true);
+					}catch(e){
+						
+					}
+					
 				}
 				record.changes = [];
 				record.synced = true;

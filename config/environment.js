@@ -1,8 +1,8 @@
 var username = "program",
 	password = "programuser",
-	mongoHost = "10.0.2.15",
+	mongoHost = "192.168.1.106",
 	mongoPort = "",
-	mongoBase = "stewardship",
+	mongoBase = "productstewardship",
 	mongoOptions = "";
 module.exports = {
 	env: "develop",

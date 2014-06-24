@@ -167,10 +167,10 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
                     if(typeof customBind ==="object" && value !== undefined && value !== null){
                         if(customBind.rule){
                             if(customBind.rule.test(field)){
-                                customBind.handler(field,value,dom);
+                                customBind.handler(field,value,tmpView);
                             }
                         }else {
-                            customBind[field](dom, value);
+                            customBind[field](tmpView, value);
                         }
                     }
 				});
@@ -275,19 +275,22 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 					this.View.error(msg);
 				}
 			},
+			onUpdate: function(e) {
+				var me = this,
+					record = this.getRecordByEvt(e);
+				this.beforeUpdate(record, function(record) {
+					record.update(me.proxy(me.afterUpdate, me, record), true);
+				});
+			},
 			update: function(record, updateAll) {
+
 				var me = this;
 				this.beforeUpdate(record, function(record) {
-					record.update(me.proxy(me.afterUpdate, me, reocrd), updateAll);
+					record.update(me.proxy(me.afterUpdate, me, record), updateAll);
 				});
 			},
 			afterUpdate: function(record, res) {
-				if (res[CONST.RESSTATUS] === CONST.RESSTATUSOK) {
-					this.View.msg("更新成功");
-					this.View.afterUpdateRecord(record);
-				} else {
-
-				}
+				throw new Error("need to overwrite this  the 'afterUpdate' method");
 			},
 			beforeRemove: function(rid, next) {
 				var local = true,

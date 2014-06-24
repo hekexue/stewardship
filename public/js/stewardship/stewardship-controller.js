@@ -167,7 +167,7 @@ var instance = null,
                             case "LessHigh":risk="较高风险等级";break;
                             case "Normal":risk = "一般风险等级";break;
                         }
-                        superviseComment = "当前产品风险等级为：【 "+risk+" 】，建议采用的监管方式为：【 " + superviseMode +" 】"
+                        superviseComment = "【 "+risk+" 】，建议采用的监管方式为：【 " + superviseMode +" 】"
                         record.set("superviseMode", superviseMode, false, false);
                         record.set("superviseComment", superviseComment, false, false);
                         this.UI.showSuperviserComment(superviseComment);
@@ -195,11 +195,11 @@ var instance = null,
                 var itemFieldName =field.substring(0, field.lastIndexOf(".")),
                     riskLevel,
                     damageLevel;
-                if(filed.indexOf(".riskLevel")){
+                if(field.indexOf(".riskLevel")>0){
                     riskLevel = value;
-                    this.UI.showRiskLevel(itemFieldName +".risk" + value);
-                }else if(filed.indexOf("damageLevel")){
-                    this.UI.showDamage(itemFieldName+"."+ value);
+                    instance.UI.showRiskLevel(itemFieldName +".risk" + value,dom);
+                }else if(field.indexOf("damageLevel")){
+                    instance.UI.showDamage(value,itemFieldName+"."+ value,dom);
                 }
             }
         }
