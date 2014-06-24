@@ -160,6 +160,7 @@ define(['jquery', '../lib/PubSub', '../lib/Event', '../lib/Type', './CONST'], fu
 							dom.attr("checked",value === false ? false :true);
 							break;
 						case "select":
+							dom.val(value);
 						break;
 						default:
 							dom.attr("data-value",value);
